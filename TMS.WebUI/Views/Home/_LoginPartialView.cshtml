@@ -1,0 +1,64 @@
+﻿@model TMS.WebApp.Models.AccountViewModel
+
+@using (Ajax.BeginForm("Login", "Home", new AjaxOptions
+{
+    HttpMethod = "POST",
+    InsertionMode = InsertionMode.Replace,
+    UpdateTargetId = "loginForm",
+    OnBegin = "deactive",
+    OnFailure = "active"
+}, new { @class = "m-t", @returnUrl = ViewBag.ReturnUrl }))
+{
+    <div>
+        @Html.Hidden("returnUrl", Request.QueryString["ReturnUrl"])
+        @Html.AntiForgeryToken()
+        @*@Html.ValidationSummary()*@
+        <p class="text-danger" id="notificationPart">@TempData["notify"]</p>
+        <div class="form-group">
+            @Html.TextBoxFor(m => m.UserName, new { @class = "form-control", @placeholder = "Tên đăng nhập" })
+            @Html.ValidationMessageFor(m => m.UserName, "", new { @class = "text-danger" })
+        </div>
+        <div class="form-group">
+            @Html.TextBoxFor(m => m.Password, new { @class = "form-control", @placeholder = "Mật khẩu", @type = "password" })
+            @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+        </div>
+        <div class="m-b-md">
+            <label>
+                @Html.CheckBoxFor(m => m.RememberMe, new { @class = "i-checks form-control" })
+                Lưu Đăng nhập
+            </label>
+        </div>
+        <div class="m-b-md">
+            <div class="">
+                <button class="ladda-button ladda-button-submit btn btn-primary full-width" data-style="zoom-in">Đăng nhập</button>
+                </div>
+            </div>
+
+    </div>
+            }
+
+<p class="text-muted">
+    <small>Quên mật khẩu? Xin liên hệ: anntt.fpt@@gmail.com</small>
+</p>
+
+<script type="text/javascript">
+            $(document).ready(function () {
+
+                $('.i-checks').iCheck({
+                    checkboxClass: 'icheckbox_square-green'
+                });
+
+                $('.ladda-button-submit').ladda();
+            });
+
+            function deactive() {
+                $('.ladda-button-submit').ladda('start');
+                $('#notificationPart').empty();
+                $('.form-control').attr('disabled','disabled');
+            };
+
+            function active() {
+                $('.ladda-button-submit').ladda('stop');
+                $('.form-control').removeAttr('disabled');
+            };
+</script>

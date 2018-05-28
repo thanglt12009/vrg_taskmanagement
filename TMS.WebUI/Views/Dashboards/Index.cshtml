@@ -1,0 +1,182 @@
+﻿@model TMS.WebApp.Models.DashboardViewModel
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="animated fadeInRight">
+    <div class="ibox-content">
+
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="ibox">
+                    <div class="ibox-title">
+                        <h4>
+                            Thống kê công việc theo Trạng thái
+                        </h4>
+                    </div>
+                    <div class="ibox-content">
+                        <div class="row">
+                            <canvas id="pieTaskByStatus"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="ibox">
+                    <div class="ibox-title">
+                        <h4>
+                            Thống kê công việc theo Độ ưu tiên
+                        </h4>
+                    </div>
+                    <div class="ibox-content">
+                        <div class="row">
+                            <canvas id="pieTaskByPriority"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="ibox">
+                <div class="ibox-title">
+                    <h4>
+                        Bảng thống kê Người làm
+                    </h4>
+                </div>
+                <div class="ibox-content">
+                    <!-- Pivot Table -->
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="table-responsive">
+                                <table class="table table-hover table-striped table-bordered" id="dataTables-tasklist" cellspacing="0" align="center" style="width : 100%;">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            @foreach (var item in Model.StateList)
+                                            {
+                                                <th>@item.Name</th>
+                                            }
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles{
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.10/css/dataTables.bootstrap.min.css " />
+}
+
+@section Scripts {
+    <script src="https://cdn.datatables.net/1.10.10/js/jquery.dataTables.min.js" type="text/javascript"></script>
+    <script src="https://cdn.datatables.net/1.10.10/js/dataTables.bootstrap.min.js" type="text/javascript"></script>
+    <script src="~/Scripts/plugins/chartJs/Chart.js"></script>
+    <script>
+        var workflow = @Model.WorkflowID;
+        var pieOptions = {
+            scaleShowLabelBackdrop: true,
+            scaleBackdropColor: "rgba(255,255,255,0.75)",
+            scaleBeginAtZero: true,
+            scaleBackdropPaddingY: 1,
+            scaleBackdropPaddingX: 1,
+            scaleShowLine: true,
+            segmentShowStroke: true,
+            segmentStrokeColor: "#fff",
+            segmentStrokeWidth: 2,
+            animationSteps: 100,
+            animationEasing: "easeOutBounce",
+            animateRotate: true,
+            animateScale: false,
+            responsive: true,
+            maintainAspectRatio: true
+        };
+
+        $(document).ready(function () {
+            $.get("/Dashboards/TaskGroupByStatus?workflow="+workflow, function (response) {
+
+                var ctx = document.getElementById("pieTaskByStatus");
+
+                // Populate Data
+                var pieData = response;
+
+                // Render Chart
+                var myNewChart = new Chart(ctx, {
+                    type: 'pie',
+                    data: pieData,
+                    options: pieOptions
+                });
+            });
+
+            $.get("/Dashboards/TaskGroupByPriority", function (response) {
+
+                var ctx = document.getElementById("pieTaskByPriority");
+
+                // Populate Data
+                var pieData = response;
+
+                // Render Chart
+                var myNewChart = new Chart(ctx, {
+                    type: 'pie',
+                    data: pieData,
+                    options: pieOptions
+                });
+            });
+
+            // Update Table
+            var columntarget = [];
+            var pivottable = $('#dataTables-tasklist').DataTable({
+                "columnDefs": [
+                    {
+                        "width": "20%",
+                        "targets": [0]
+                    },
+                    {
+                        "className": "text-center custom-middle-align",
+                        "targets": [0, 1, 2, 3, 4, 5, 6]
+                    },
+                ],
+                "language":
+                {
+                    "processing": "<div class='overlay custom-loader-background'><i class='fa fa-cog fa-spin custom-loader-color'></i></div>"
+                },
+                "ajax": {
+                    "url": "@Url.Action("TaskPivot", "Dashboards", new { workflow = Model.WorkflowID })",
+                    "type": "POST",
+                    "dataType": "JSON"
+                },
+                "columns": [
+                    { "data": "0" },
+                    { "data": "1" },
+                    { "data": "2" },
+                    { "data": "3" },
+                    { "data": "4" },
+                    { "data": "5" },
+                    { "data": "6" }
+                ],
+                "processing": true,
+                "deferRender": true,
+                "serverSide": true,
+                "searchDelay": 800,
+                "autoWidth": true,
+                "stateSave": true,
+                "oLanguage": {
+                    "sLengthMenu": "Hiển thị _MENU_ dòng mỗi trang",
+                    "sZeroRecords": "Xin lỗi, không tìm thấy dữ liệu",
+                    "sInfo": "Đang xem từ _START_ đến _END_ của _TOTAL_ dòng",
+                    "sInfoEmpty": "Đang không có dữ liệu để xem",
+                    "sInfoFiltered": "(Đã lọc trong toàn bộ _MAX_ dữ liệu)",
+                    "sSearch": "Tìm kiếm:",
+                    "oPaginate": { "sFirst": "Trang đầu", "sLast": "Trang cuối", "sNext": "Kế tiếp", "sPrevious": "Trang trước" }
+                }
+            });
+        });
+    </script>
+}

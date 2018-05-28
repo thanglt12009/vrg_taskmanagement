@@ -1,0 +1,20 @@
+﻿
+@{
+    ViewBag.Title = "Administration";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+
+<h1>ADMIN INDEX</h1>
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="ibox">
+            <div class="ibox-content">
+                <div class="col-md-4"><a role="button" href="@Url.Action("ListAccount", "Admin")" class="dropdown-toggle"><i class="fa fa-users"></i> Quản lý Người dùng </a></div>
+                <div class="col-md-4"><a role="button" href="@Url.Action("ListCategory", "Admin")" class="dropdown-toggle"><i class="fa fa-users"></i> Quản lý Danh mục </a></div>
+                <div class="col-md-4"><a role="button" href="@Url.Action("ReIndexElastic", "Admin")" class="dropdown-toggle"><i class="fa fa-users"></i> Tạo lại dữ liệu tìm kiếm </a></div>
+            </div>
+        </div>
+    </div>
+</div>

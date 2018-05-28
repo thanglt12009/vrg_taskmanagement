@@ -1,0 +1,31 @@
+﻿@model TMS.WebApp.Models.ElasticSearchQuery
+
+@{
+    ViewBag.Title = "Search";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+    <div class="ibox">
+        <div class="ibox-title">
+            <div class="col-md-4">
+                <label>Tìm kiếm nội dung</label>
+            </div>
+        </div>
+        <div class="ibox-content">
+            <div class="row">
+                @using (Ajax.BeginForm("Search", "Elastic", new AjaxOptions
+                { HttpMethod = "POST", UpdateTargetId = "searchResult" }))
+                {
+                    <div class="col-xs-10">
+                        @Html.EditorFor(m => m.RawSearch, new { @class = "form-control", @placeholder = "Tìm kiếm ..." })
+                    </div>
+                    <div>
+                        <button type="submit" class="btn btn-primary">Tìm</button>
+                    </div>
+                }
+            </div>
+            <div class="row" id="searchResult"></div>
+        </div>
+    </div>
+</div>

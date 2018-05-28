@@ -1,0 +1,148 @@
+﻿@model TMS.Domain.Entities.Worktask
+
+@using TMS.WebApp.Services
+@using TMS.Domain.Common
+
+<div id="@ViewData["action"]-editAttachment" class="modal fade" style="z-index: 2051 !important" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title text-left">Điền thông tin file</h4>
+            </div>
+            @using (Html.BeginForm("", "", FormMethod.Post, new { Id = @ViewData["action"] + "-attachmentForm" }))
+            {
+                <div class="modal-body">
+                    <div class="form-horizontal">
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Attachment.First().AttachmentCode, htmlAttributes: new { @class = "control-label col-md-3" })
+                            <div class="col-md-9">
+                                @Html.EditorFor(model => model.Attachment.First().AttachmentCode, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Attachment.First().AttachmentCode, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Attachment.First().ArchiveType, htmlAttributes: new { @class = "control-label col-md-3 fieldrequired" })
+                            <div class="col-md-9">
+                                @{ 
+                                    var attTypeList = CategoryService.GetInstance().GetCategoryList(Contain.CatType.AttachmentType);
+                                    var attTypeTextList = new List<SelectListItem>();
+                                    foreach (var item in attTypeList)
+                                    {
+                                        var i = new SelectListItem();
+                                        i.Text = item.Text;
+                                        i.Value = item.Text;
+                                        attTypeTextList.Add(i);
+                                    }
+                                }
+                                @Html.DropDownListFor(model => model.Attachment.First().ArchiveType, attTypeTextList, new { @class = "form-control dropdown" })
+                                @Html.ValidationMessageFor(model => model.Attachment.First().ArchiveType, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Attachment.ElementAt(0).Date, htmlAttributes: new { @class = "control-label col-md-3 fieldrequired" })
+                            <div class="col-md-4">
+                                <div class="input-group">
+                                    @Html.EditorFor(model => model.Attachment.ElementAt(0).Date, new { htmlAttributes = new { @class = "form-control date datepicker", @readonly="readonly" } })<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                </div>
+                                @Html.ValidationMessageFor(model => model.Attachment.ElementAt(0).Date, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Attachment.First().Receiver, htmlAttributes: new { @class = "control-label col-md-3" })
+                            <div class="col-md-9">
+                                <div id="attachment_receiver_search_bar_edit"></div>
+                                @Html.EditorFor(model => model.Attachment.First().Receiver, new { htmlAttributes = new { @class = "form-control", @style = "display:none;", id = "EditReceiver" } })
+                                @Html.ValidationMessageFor(model => model.Attachment.First().Receiver, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Attachment.First().ArchiveNo, htmlAttributes: new { @class = "control-label col-md-3" })
+                            <div class="col-md-9">
+                                @Html.EditorFor(model => model.Attachment.First().ArchiveNo, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Attachment.First().ArchiveNo, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Attachment.First().StorageLocation, htmlAttributes: new { @class = "control-label col-md-3" })
+                            <div class="col-md-9">
+                                @Html.EditorFor(model => model.Attachment.First().StorageLocation, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Attachment.First().StorageLocation, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="form-group">
+                        <div class="col-md-offset-2 col-md-10">
+                            <input type="button" id="@ViewData["action"]-cancel-upload" value="Hủy" class="btn btn-white" data-dismiss="modal" />
+                            <input type="submit" id="@ViewData["action"]-extrabutton" value="Tải lên" class="btn btn-primary" />
+                        </div>
+                    </div>
+                </div>
+            }
+
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    var editattachreceiver = '';
+    $(document).ready(
+    (function () {
+        $('.date').datepicker({
+            dateFormat: 'dd/mm/yyyy',
+            todayBtn: "linked",
+            forceParse: true,
+            keyboardNavigation: true,
+            autoclose: true,
+            calendarWeeks: true,
+            language: 'vi',
+            
+        });
+        $.ajax({
+            type: 'GET',
+            url: '/Worktask/GetAccount',
+            success: function (data) {
+                var initReceiver;
+                var onChange = function (newValue, oldValue) {
+                    //e.messageDisplay.hide();
+                    $('#EditReceiver').val("");
+                    if (newValue !== undefined && newValue.length > 0) {
+                        for (var i = 0; i < newValue.length; i++) {
+                            if (i == 0) {
+                                $('#EditReceiver').val(newValue[i][0].value.name);
+                            } else {
+                                $('#EditReceiver').val($('#EditReceiver').val() + "," + newValue[i][0].value.name);
+                            }
+                        }
+                    }
+                    return newValue;
+                };
+                var Receiver = [];
+                for (var i = 0; i < data.source.length; i++) {
+                    Receiver.push({ value: data.source[i] });
+                    if (data.source[i].id == parseInt($('#EditReceiver').val())) {
+                        initReceiver = i;
+                    }
+                }
+                var config = {
+                    onChange: onChange,
+                    lists: {
+                        Receiver: {
+                            optionHTML: '{name}',
+                            options: Receiver
+                        }
+                    }
+                };
+                editattachreceiver = new AutoComplete('attachment_receiver_search_bar_edit', config);
+                editattachreceiver.setValue([Receiver[initReceiver]]);
+            },
+            error: function (msg) {
+                alert("error");
+            }
+        });
+    })());
+</script>

@@ -1,0 +1,167 @@
+﻿@model TMS.WebApp.Models.KanbanViewModel
+@using TMS.Domain.Common
+@{
+    var statelist = "";
+}
+@foreach (var state in Model.Board.Workflow.States)
+{
+    <div class="col-xs-2 padding-5">
+        <div class="ibox">
+            <div class="ibox-content padding-5">
+                <h4>@state.Name (@Model.TaskLists[state.ID].Count())</h4>
+@{
+    var nextstate = "";
+    foreach (var t in state.TransitionTo)
+    {
+        nextstate += "state-" + t.ToStateID.ToString() + " ";
+    }
+}
+                <ul class="sortable-list connectList agile-list state-@state.ID" id="state-@state.ID" nextstate="@nextstate">
+                    <!-- Start Loop -->
+                    @foreach (var task in Model.TaskLists[state.ID])
+                    {
+                        <!-- Render <li> with class as priority and id as Task ID -->
+                        <li class="ui-state-default ui-widget-content priority@((int)task.Priority) padding-5" id="@task.WorktaskID">
+                            <div class="ibox">
+                                <div class="ibox-title padding-5 kanban-task-title-block">
+                                    <div class="kanban-task-title pull-left">
+                                        <strong><a href="@Url.Action("Detail", "Worktask", new { taskcode = task.Identify, ReturnUrl = "/Kanban/ViewBoard?boardcode=" + Model.Board.Code })">@task.Title</a></strong>
+                                        <p>@(AccountHelper.GetUserFullname(task.Assignee.UserName))</p>
+                                    </div>
+                                    <a class="collapse-link pull-right">
+                                        <i class="fa fa-chevron-up"></i>
+                                    </a>
+                                </div>
+                                <div class="ibox-content" style="display: none;">
+                                    <div class="row no-gutter agile-detail">
+                                        <div class="form-horizontal">
+                                            <i class="fa fa-clock-o"></i><span class="small"> @Html.ValueFor(m => task.StartDate, "{0:dd/MM/yyyy}")</span><br />
+                                            <i class="fa fa-clock-o"></i><span class="small"> @Html.ValueFor(m => task.EndDate, "{0:dd/MM/yyyy}")</span><br />
+                                            <i class="fa fa-user"></i> @(AccountHelper.GetUserFullname(task.Assignee.UserName))
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+    statelist += "#state-" + state.ID.ToString() + ", ";
+}
+@if (statelist.Length > 0)
+{
+    statelist = statelist.Remove(statelist.Length - 2, 2);
+}
+@Scripts.Render("~/Scripts/jquery.ui.touch-punch.js")
+<script type="text/javascript">
+    var statelist = [];
+
+    @foreach (var state in Model.Board.Workflow.States)
+    {
+        var t1 = "statelist[\"state-" + state.ID.ToString() + "\"] = \"" + state.Name + "\";";
+        @Html.Raw(t1);
+    }
+    $(document).ready(function () {
+        $("@statelist").sortable({
+            connectWith: ".connectList",
+            cancel: ".ui-state-disabled",
+            receive: function (ev, ui) {
+                var valid = true;
+
+                // FOR INITIALIZE STATUS
+                // INIT CANNOT APPROVED
+                var st1 = ui.sender.attr("id");
+                var st2 = ui.item.parent().attr("id");
+                if (ui.sender.attr("nextstate").indexOf(st2) === -1) {
+                    ui.sender.sortable("cancel");
+                    valid = false;
+                    popuperror(statelist[st1], statelist[st2]);
+                }
+                    // ELSE
+                    // UPDATEBOARD
+                else {
+
+                    var WorktaskID = ui.item.attr("id");
+                    var newStatus = ui.item.parent().attr("id").replace("state-", "");
+
+                    $.ajax({
+                        url: '../api/worktaskapi/Post',
+                        type: "POST",
+                        data: { "WorktaskID": WorktaskID, "Status": newStatus },
+                        success: function (result) {
+                            if (result.isSuccess) {
+                                swal({
+                                    title: "Thông báo",
+                                    text: result.msg,
+                                    confirmButtonClass: "btn btn-primary",
+                                    type: "success",
+                                    showCancelButton: false
+                                },
+                                function () {
+                                    //location.reload();
+                                    $("#searchForm").submit();
+                                });
+                            } else {
+                                swal({
+                                    title: "Lỗi",
+                                    text: result.msg,
+                                    confirmButtonClass: "btn-primary",
+                                    type: "error",
+                                    showCancelButton: false
+                                },
+                                function () {
+                                    location.reload();
+                                });
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            swal({
+                                title: "Lỗi",
+                                text: error + " - Trạng thái: " + status,
+                                confirmButtonClass: "btn-primary",
+                                type: "error",
+                                showCancelButton: false
+                            },
+                                function () {
+                                    location.reload();
+                                }
+                            );
+                        }
+                    });
+                };
+            }
+        }).disableSelection();
+		$(".sortable-list").on('touchstart', 'a',function(){
+			if ($(this).hasClass('collapse-link')) {
+				$(this).click();
+			} else {
+				windows.location = $(this).attr('href');
+			}
+		});
+
+    });
+
+
+    $.validator.addMethod('date',
+function (value, element, params) {
+    if (this.optional(element)) {
+        return true;
+    }
+
+    var ok = true;
+    try {
+        $.datepicker.parseDate('dd/mm/yyyy', value);
+    }
+    catch (err) {
+        ok = false;
+    }
+    return ok;
+});
+
+    function popuperror(source, target) {
+        swal("Invalid", "Không thể chuyển trạng thái từ " + source + " sang " + target + ".", "error");
+    };
+
+</script>

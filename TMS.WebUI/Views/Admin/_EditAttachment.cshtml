@@ -1,0 +1,74 @@
+﻿@model TMS.Domain.Entities.Worktask
+<div id="editAttachment" class="modal fade" style="z-index: 2051 !important" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title text-left">Attachment additional information</h4>
+            </div>
+            @using (Html.BeginForm("", "", FormMethod.Post, new { Id = "attachmentForm" }))
+            {
+
+                <div class="modal-body">
+                    <div class="form-horizontal">
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Attachment.First().AttachmentCode, htmlAttributes: new { @class = "control-label col-md-3" })
+                            <div class="col-md-9">
+                                @Html.EditorFor(model => model.Attachment.First().AttachmentCode, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Attachment.First().AttachmentCode, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Attachment.First().ArchiveType, htmlAttributes: new { @class = "control-label col-md-3" })
+                            <div class="col-md-9">
+                                @Html.EditorFor(model => model.Attachment.First().ArchiveType, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Attachment.First().ArchiveType, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Attachment.First().Date, htmlAttributes: new { @class = "control-label col-md-3" })
+                            <div class="col-md-4">
+                                <div class="input-group">
+                                    @Html.EditorFor(model => model.Attachment.First().Date, new { htmlAttributes = new { @class = "form-control date" } })<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                </div>
+                                @Html.ValidationMessageFor(model => model.Attachment.First().Date, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Attachment.First().Receiver, htmlAttributes: new { @class = "control-label col-md-3" })
+                            <div class="col-md-9">
+                                @Html.EditorFor(model => model.Attachment.First().Receiver, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Attachment.First().Receiver, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Attachment.First().ArchiveNo, htmlAttributes: new { @class = "control-label col-md-3" })
+                            <div class="col-md-9">
+                                @Html.EditorFor(model => model.Attachment.First().ArchiveNo, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Attachment.First().ArchiveNo, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Attachment.First().StorageLocation, htmlAttributes: new { @class = "control-label col-md-3" })
+                            <div class="col-md-9">
+                                @Html.EditorFor(model => model.Attachment.First().StorageLocation, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Attachment.First().StorageLocation, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="form-group">
+                        <div class="col-md-offset-2 col-md-10">
+                            <input type="button" id="cancel-upload" value="Cancel" class="btn btn-white" data-dismiss="modal" />
+                            <input type="submit" id="extrabutton" value="Upload" class="btn btn-primary" />
+                        </div>
+                    </div>
+                </div>
+            }
+
+        </div>
+    </div>
+</div>
+

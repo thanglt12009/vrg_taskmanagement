@@ -1,0 +1,238 @@
+﻿@using TMS.WebApp.HtmlHelpers
+@using TMS.Domain.Common;
+@using TMS.WebApp.Services;
+
+@model TMS.Domain.Entities.Account[]
+@{
+    ViewBag.Title = "Quản lý tài khoản";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>Danh sách tài khoản</h2>
+        @if (User.Identity != null && User.Identity.IsAuthenticated)
+        {
+        }
+    </div>
+    <div class="col-lg-2">
+
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="ibox">
+            <div class="ibox-content">
+                <input type="button" class="btn btn-default btn-sm" style="margin-bottom: 15px;" value="Thêm tài khoản" data-toggle="modal" id="btn-add-user" onclick="getAddUserModal()" data-target="#modal-add-user" />
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered table-hover dataTables-example">
+                        <thead>
+                            <tr>
+                                <th>Tên đăng nhập</th>
+                                <th>Tên đầy đủ</th>
+                                <th>Email</th>
+                                <th>Người dùng nội bộ</th>
+                                <th>Phòng ban</th>
+                                <th>Vai trò</th>
+                                <th>Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var a in @Model)
+                            {
+                                <tr>
+                                    <td class="col-lg-1">@a.UserName</td>
+                                    <td class="col-lg-1">@a.DisplayName2</td>
+                                    <td class="col-lg-1">@a.Email</td>
+                                    <td class="col-lg-1">
+                                        @{if (a.IsLocalUser)
+                                            {
+                                                <input type="checkbox" checked />
+                                            }
+                                            else
+                                            {
+                                                <input type="checkbox" />
+                                            }
+
+                                        }
+                                    </td>
+                                    <td class="col-lg-1">@a.Department.DeptName</td>
+                                    <td class="col-lg-1">
+                                        @{
+                                            var edit_id = a.UID + "-e";
+                                            var del_id = a.UID + "-d";
+                                            var btn_edit = "btn-" + a.UID + "-e";
+                                            var btn_save = "btn-" + a.UID + "-s";
+                                            var ddl_id = "ddl-" + a.UID;
+                                        }
+                                        <p id="@edit_id">@CategoryService.GetInstance().GetCategoryName(a.Role, Contain.CatType.UserRole)</p>
+                                        @Html.DropDownListFor(model => a.Role, CategoryService.GetInstance().GetCategoryList(Contain.CatType.UserRole), new { @id = ddl_id, @class = "form-control", @style = "display:none" })
+                                    </td>
+                                    <td class="col-lg-2">
+
+                                        <input type="button" data-toggle="modal" class="btn btn-default btn-sm" value="Sửa" data-id="@a.UID" onclick="getEditUserModal('@a.UID')" />
+
+                                    </td>
+
+                                </tr>
+                             }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<!-- Add Account Modal -->
+<div class="modal fade inmodal" tabindex="-1" role="dialog" aria-hidden="true" style="overflow:auto" aria-labelledby="gridSystemModalLabel" id="modal-add-user">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content animated fadeIn">
+            <div class="modal-header">
+                <h4 class="modal-title text-left">Thêm tài khoản</h4>
+            </div>
+            <div id="container-add-user">
+            </div>
+        </div>
+
+    </div>
+</div>
+<!-- End Add Account Modal -->
+<!-- Update Account Modal -->
+<div class="modal fade inmodal" tabindex="-1" role="dialog" aria-hidden="true" style="overflow:auto" aria-labelledby="gridSystemModalLabel" id="modal-edit-user">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content animated fadeIn">
+            <div class="modal-header">
+                <h4 class="modal-title text-left">Sửa tài khoản</h4>
+            </div>
+            <div id="container-edit-user">
+            </div>
+        </div>
+
+    </div>
+</div>
+<!-- End Update Account Modal -->
+<!-- Delete Account Modal -->
+@using (Html.BeginForm("DeleteUser", "Admin", FormMethod.Post))
+{ 
+<div class="modal fade inmodal" id="modal-delete-user" role="dialog" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog" style="position: initial;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title text-center">
+                   Bạn có chắc muốn xóa tài khoản <span id="span-username"></span>?    
+                    <input type="hidden" value="" id   ="span-uid"/>           
+                </h4>
+            </div>
+            <div class="modal-body">
+                <div class="success">
+                    <div class="form-group" style="text-align:center">
+                        <input type="button" value="Hủy" class="btn btn-white reset-button" data-dismiss="modal" />
+                        <input type="submit" value="Xóa" class="btn btn-primary" />
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+}
+<!-- End Delete Account Modal -->
+<script>
+    function getAddUserModal() {
+        console.log("CREATE USER ACTIVATE");
+        $.ajax({
+
+            type: "POST",
+            url: "@Url.Action("AddUser", "Admin")",
+            success: function (content) {
+                $("#modal-add-user").modal('show');
+                $("#container-add-user").html(content);
+            },
+            error: function (e) { }
+        });
+    }
+    function getEditUserModal(UID) {
+        console.log("EDIT USER ACTIVATE");
+        $.ajax({
+
+            type: "POST",
+            url: "@Url.Action("EditUser", "Admin")" + "?UID=" + UID,
+            success: function (content) {
+                $("#modal-edit-user").modal('show');
+                $("#container-edit-user").html(content);
+            },
+            error: function (e) {
+                console.log("modal fail");
+            }
+        });
+    }
+
+    function getDeleteUserModal(UID,username) {
+        console.log("CREATE USER ACTIVATE");
+        $.ajax({
+
+            type: "POST",
+            url: "@Url.Action("AddUser", "Admin")",
+            success: function (content) {
+                $("#modal-delete-user").modal('show');
+                $("#span-username").text(username);
+                $("#span-uid").text(UID);
+            },
+        error: function (e) { }
+    });
+    }
+
+
+
+    function enableRoleList(UID) {
+        console.log("EDIT ACTIVATE");
+        $("#" + UID + "-e").hide();
+        $("#btn-" + UID + "-e").hide();
+        $("#ddl-" + UID).show();
+        $("#btn-" + UID + "-s").show();
+    }
+
+    function saveRole(UID) {
+        console.log("SAVE ACTIVATE");
+        var role = $("#ddl-" + UID).val();
+        var account = {
+            UID: UID,
+            role: role,
+        }
+
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("EditRole", "Admin")",
+            data: account,
+            success: function () {
+                if (role == 1) {
+                    $("#" + UID + "-e").text("Admin");
+                } else if (role == 2) {
+                    $("#" + UID + "-e").text("Manager");
+                } else if (role == 3) {
+                    $("#" + UID + "-e").text("Normal User");
+                } else {
+                    $("#" + UID + "-e").text("Undefined");
+                }
+                $("#" + UID + "-e").show();
+                $("#btn-" + UID + "-e").show();
+                $("#ddl-" + UID).hide();
+                $("#btn-" + UID + "-s").hide();
+            },
+            error: function (e) {
+            },
+
+        });
+
+
+
+    }
+
+</script>

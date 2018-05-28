@@ -1,0 +1,194 @@
+﻿@model TMS.Domain.Entities.Worktask
+@using TMS.WebApp.Services
+@using TMS.Domain.Common
+
+<link href="~/Content/plugins/autocomplete/autocomplete.css" rel="stylesheet" />
+<div id="modal-container-editmodal" class="modal inmodal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content animated fadeIn">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">Chỉnh sửa @Html.ValueFor(model => model.Identify)</h4>
+            </div>
+            @using (Html.BeginForm("Edit", "Worktask", FormMethod.Post, new { Id = "formEditTask" }))
+            {
+                @Html.AntiForgeryToken()
+                <div class="modal-body">
+                    <div class="form-horizontal">
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                        @Html.HiddenFor(model => model.BoardID)
+                        @Html.HiddenFor(model => model.WorktaskID)
+                        @Html.HiddenFor(model => model.Identify)
+                        @Html.HiddenFor(model => model.Owner)
+                        @Html.HiddenFor(model => model.Reporter)
+                        @Html.HiddenFor(model => model.Status)
+                        @Html.HiddenFor(model => model.Priority)
+                        @Html.HiddenFor(model => model.DataPath)
+                        @Html.HiddenFor(model => model.ActualStartDate)
+                        @Html.HiddenFor(model => model.ActualEndDate)
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Title, htmlAttributes: new { @class = "control-label col-md-2 fieldrequired" })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.Title, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Title, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <!--TASK CATEGORY-->
+                            <div class="">
+                                @Html.LabelFor(model => model.TaskType, htmlAttributes: new { @class = "control-label col-md-2 fieldrequired" })
+                                <div class="col-md-4">
+                                    @Html.DropDownListFor(model => model.TaskType, CategoryService.GetInstance().GetCategoryList(Contain.CatType.Category), new { @class = "form-control dropdown" })
+                                    @Html.ValidationMessageFor(model => model.TaskType, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <!--TASK COMPANY-->
+                            <div class="">
+                                @Html.LabelFor(model => model.MetaInfoCompany, htmlAttributes: new { @class = "control-label col-md-2" })
+                                <div class="col-md-4">
+                                    @Html.DropDownListFor(model => model.MetaInfoCompany, CategoryService.GetInstance().GetCategoryList(Contain.CatType.Company), new { @class = "form-control dropdown" })
+                                    @Html.ValidationMessageFor(model => model.MetaInfoCompany, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div>
+                                @Html.LabelFor(model => model.MetaInfoDocumentNo, htmlAttributes: new { @class = "control-label col-md-2" })
+                                <div class="col-md-4">
+                                    @Html.EditorFor(model => model.MetaInfoDocumentNo, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.MetaInfoDocumentNo, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <!--TASK ASIGNEE NAME-->
+                            <div>
+                                @Html.LabelFor(model => model.Assignee, htmlAttributes: new { @class = "control-label col-md-2 fieldrequired" })
+                                <div class="col-md-4">
+                                    <input type="hidden" value="@Model.AssigneeAcc.UserName" id="AssigneeName" />
+                                    <div id="search_bar_assignee_edit"></div>
+                                    @Html.EditorFor(model => model.Assignee, new { htmlAttributes = new { @class = "form-control", @style = "display:none;", id = "EditAssignee" } })
+
+                                    <div id="validation-message">
+                                        @Html.ValidationMessageFor(model => model.Assignee, "", new { @class = "text-danger", @style = "margin-left: -125px;" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div id="data_tocompanydate">
+                                @Html.LabelFor(model => model.MetaInfoToVRGDateTime, htmlAttributes: new { @class = "control-label col-md-2" })
+                                <div class="col-md-4">
+                                    <div class="input-group">
+                                        @Html.EditorFor(model => model.MetaInfoToVRGDateTime, new { htmlAttributes = new { @class = "form-control date datepicker", @id = "tovrgdate", @readonly = "readonly" } })<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                    </div>
+                                    @Html.ValidationMessageFor(model => model.MetaInfoToVRGDateTime, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div id="data_todepartmentdate">
+                                @Html.LabelFor(model => model.MetaInfoToDepartmentDateTime, htmlAttributes: new { @class = "control-label col-md-2" })
+                                <div class="col-md-4">
+                                    <div class="input-group">
+                                        @Html.EditorFor(model => model.MetaInfoToDepartmentDateTime, new { htmlAttributes = new { @class = "form-control date datepicker", @id = "todepartmentdate", @readonly = "readonly" } })<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                    </div>
+                                    @Html.ValidationMessageFor(model => model.MetaInfoToDepartmentDateTime, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div>
+                                @Html.LabelFor(model => model.PlannedStartDate, htmlAttributes: new { @class = "control-label col-md-2" })
+                                <div class="col-md-4">
+                                    <div class="input-group">
+                                        @Html.EditorFor(model => model.PlannedStartDate, new { htmlAttributes = new { @class = "form-control date datepicker", @id = "editStartDate", @readonly = "readonly" } })<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                    </div>
+                                    @Html.ValidationMessageFor(model => model.PlannedStartDate, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div>
+                                @Html.LabelFor(model => model.PlannedEndDate, htmlAttributes: new { @class = "control-label col-md-2" })
+                                <div class="col-md-4">
+                                    <div class="input-group">
+                                        @Html.EditorFor(model => model.PlannedEndDate, new { htmlAttributes = new { @class = "form-control date datepicker", @id = "editEndDate", @readonly = "readonly" } })<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                    </div>
+                                    @Html.ValidationMessageFor(model => model.PlannedEndDate, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+
+                        @{
+                            var selectedtaskcode = "";
+                            foreach (var item in Model.TaskMetas)
+                            {
+                                if (item.MetaKey == "RelatedTask")
+                                {
+                                    selectedtaskcode += item.MetaValue + ",";
+                                }
+                            }
+                        }
+                        <div class="form-group">
+                            <div>
+                                @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
+                                <div class="col-md-4">
+                                    @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div>
+                                <label class="control-label col-md-2">Công việc liên quan</label>
+                                <div class="col-md-4">
+                                    <div id="search_bar_related_tasks_edit"></div>
+                                    <input name="RelatedTaskValue" id="relatedtasklistedit" data-tag="@selectedtaskcode" type="hidden" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <!--TASK Director NAME-->
+                            <div>
+                                @Html.LabelFor(model => model.Director, htmlAttributes: new { @class = "control-label col-md-2" })
+                                <div class="col-md-4">
+                                        @{ var reportername = (Model.DirectorAcc == null ? string.Empty : Model.DirectorAcc.UserName);}
+                                    <input type="hidden" value="@reportername" id="DirectorName" />
+                                    <div id="search_bar_director_edit"></div>
+                                    @Html.EditorFor(model => model.Director, new { htmlAttributes = new { @class = "form-control", @style = "display:none;", id = "EditDirector" } })
+
+                                    <div id="validation-message">
+                                        @Html.ValidationMessageFor(model => model.Director, "", new { @class = "text-danger", @style = "margin-left: -125px;" })
+                                    </div>
+                                </div>
+                            </div>
+                            <!--TASK Council member NAME-->
+                            <div>
+                                @Html.LabelFor(model => model.CouncilMember, htmlAttributes: new { @class = "control-label col-md-2" })
+                                <div class="col-md-4">
+                                    @{ var councilmembername = (Model.CouncilMemberAcc == null ? string.Empty : Model.CouncilMemberAcc.UserName);}
+                                    <input type="hidden" value="@councilmembername" id="CouncilMemberName" />
+                                    <div id="search_bar_councilmember_edit"></div>
+                                    @Html.EditorFor(model => model.CouncilMember, new { htmlAttributes = new { @class = "form-control", @style = "display:none;", id = "EditCouncilMember" } })
+
+                                    <div id="validation-message">
+                                        @Html.ValidationMessageFor(model => model.CouncilMember, "", new { @class = "text-danger", @style = "margin-left: -125px;" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="form-group">
+                        <div class="col-md-offset-2 col-md-10">
+                            <input type="button" value="Hủy" class="btn btn-white" data-dismiss="modal" />
+                            <input type="submit" value="Lưu" class="btn btn-primary" />
+                        </div>
+                    </div>
+                </div>
+            }
+            </div>
+        </div>
+    </div>
+<script src="~/Scripts/worktask/worktask.resetform.js"></script>
+<script src="~/Scripts/worktask/worktask.editform.js"></script>
+<script type="text/javascript">
+    (function () {
+        EditWorkTasks.init();
+    })();
+</script>

@@ -1,0 +1,90 @@
+﻿@model TMS.WebApp.Models.MoveTaskViewModel
+@using TMS.WebApp.Services
+@using TMS.Domain.Common
+
+<link href="~/Content/plugins/autocomplete/autocomplete.css" rel="stylesheet" />
+<div id="modal-container-movemodal" class="modal inmodal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content animated fadeIn">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">Chuyển bảng công việc</h4>
+            </div>
+            @using (Html.BeginForm("MoveTask", "Worktask", FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
+                <div class="modal-body">
+                    <div class="form-horizontal">
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                        @Html.HiddenFor(model => model.WorktaskID)
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.BoardID, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @{ 
+                                    List<SelectListItem> selectList = new List<SelectListItem>();
+                                    var boardlist = BoardService.GetInstance().GetBoardList(User.Identity.Name, null);
+                                    foreach (var board in boardlist)
+                                    {
+                                        if (!board.Value.Equals(Model.BoardID.ToString()))
+                                        {
+                                            selectList.Add(board);
+                                        }
+                                    }
+                                }
+                                @Html.DropDownListFor(model => model.BoardID, selectList, new { @class = "form-control dropdown", @onchange = "javascript:GetState(this.value);" })
+                                @Html.ValidationMessageFor(model => model.BoardID, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-2" for="StateID">Trạng thái</label>
+                            <div class="col-md-10">
+                                <select class="form-control dropdown valid" data-val="true" data-val-number="The field Trạng thái must be a number." data-val-required="Xin chọn Trạng thái" id="StateID" name="StateID" aria-required="true" aria-describedby="StateID-error" aria-invalid="false">
+                                </select>
+                                <span class="text-danger field-validation-valid" data-valmsg-for="StateID" data-valmsg-replace="true"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="form-group">
+                        <div class="col-md-offset-2 col-md-10">
+                            <input type="button" value="Hủy" class="btn btn-white" data-dismiss="modal" />
+                            <input type="submit" value="Chuyển" class="btn btn-primary" />
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    var currentStateId = @Model.StateID;
+    function GetState(_boardId) {
+        var procemessage = "<option value='0'> Vui lòng chờ một chút...</option>";
+        $("#StateID").html(procemessage).show();
+        var url = "@Url.Action("GetStateByBoardId", "Worktask")";
+
+        $.ajax({
+            url: url,
+            data: { boardid: _boardId },
+            cache: false,
+            type: "POST",
+            success: function (data) {
+                var markup = "";
+                for (var x = 0; x < data.length; x++) {
+                    markup += "<option value=" + data[x].Value + ">" + data[x].Text + "</option>";
+                }
+                $("#StateID").html(markup).show();
+                if (currentStateId > 0) {
+                    $('#StateID').val(currentStateId);
+                    currentStateId = 0;
+                }
+            },
+            error: function (reponse) {
+            }
+        });
+    }
+    $(document).ready(function () {
+        GetState($('#BoardID').val());
+    });
+</script>

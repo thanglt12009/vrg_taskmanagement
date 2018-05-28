@@ -1,0 +1,98 @@
+﻿@model TMS.Domain.Entities.Account
+@using TMS.WebApp.Services
+@using TMS.Domain.Common
+
+<link href="~/Content/uploadFile/uploadfile.css" rel="stylesheet" />
+<script src="~/Scripts/plugins/upload/upload.js"></script>
+
+<!--Add user modal -->
+
+        @using (Html.BeginForm("Save", "Admin", FormMethod.Post, new { Id = "formCreateUser" }))
+            {
+            @Html.AntiForgeryToken()
+            <div class="modal-body">
+                <div class="form-horizontal">
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.UserName, htmlAttributes: new { @class = "control-label col-md-3" })
+                        <div class="col-md-4">
+                            @Html.EditorFor(model => model.UserName, new { htmlAttributes = new { @class = "form-control", @id = "input-username-a" } })
+                            @Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-danger" })
+                            <input type="hidden" id="input-error" value="Tên đăng nhập đã sử dụng!">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.DisplayName2, htmlAttributes: new { @class = "control-label col-md-3" , @id = "input-display-a"})
+                        <div class="col-md-4">
+                            @Html.EditorFor(model => model.DisplayName2, new { htmlAttributes = new { @class = "form-control" } })
+                            @*@Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-danger" })*@
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Password, htmlAttributes: new { @class = "control-label col-md-3", @id = "input-display-a" })
+                        <div class="col-md-4">
+                            @Html.PasswordFor(model => model.Password, new { htmlAttributes = new { @class = "form-control" } })
+                            @*@Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-danger" })*@
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label col-md-3", @id = "input-display-a" })
+                        <div class="col-md-4">
+                            @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
+                            @*@Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-danger" })*@
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.IsLocalUser, htmlAttributes: new { @class = "control-label col-md-3", @id = "input-display-a" })
+                    <div class="col-md-4">
+                            @Html.CheckBoxFor(model => model.IsLocalUser, new { htmlAttributes = new { @class = "form-control" } })
+                            @*@Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-danger" })*@
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Department.DeptName, htmlAttributes: new { @class = "control-label col-md-3" })
+                        <div class="col-md-4">
+                            @Html.DropDownList("DeptID", (IEnumerable<SelectListItem>)ViewBag.Departments, new { @class = "form-control" })                          
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Role, htmlAttributes: new { @class = "control-label col-md-3" })
+                        <div class="col-md-4">
+                            @Html.DropDownListFor(model => model.Role, CategoryService.GetInstance().GetCategoryList(Contain.CatType.UserRole), new { @class = "form-control dropdown" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <input type="button" value="Hủy" class="btn btn-white reset-button" data-dismiss="modal" />
+                        <input type="submit" value="Tạo" class="btn btn-primary" />
+                    </div>
+                </div>
+            </div>
+        }
+
+
+<script type="text/javascript">
+
+
+    $("#input-username-a").focusout(function () {
+        $.ajax({
+
+            type: "POST",
+            url: "@Url.Action("IsUserExisted", "Admin")" + "?UID=" + UID,
+            success: function (check) {
+                if(check)
+                {
+                    $('input-error').show();
+                } else {
+                    $('input-error').hide();
+                }
+            },
+        error: function (e) {
+            console.log("modal fail");
+        }
+    });
+    })
+</script>

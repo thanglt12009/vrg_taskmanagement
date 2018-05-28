@@ -1,0 +1,156 @@
+﻿@using TMS.Domain.Common
+@using Microsoft.AspNet.Identity
+@using TMS.WebApp.Services
+@using TMS.WebApp.Models
+
+<div class="row border-bottom white-bg">
+    <nav class="navbar navbar-static-top" role="navigation">
+        <div class="navbar-header">
+            <a href="@Url.Action("Index", "Kanban")" class="navbar-brand">VRG</a>
+            <a class="dropdown-toggle navbar-brand" role="button" type="button" data-toggle="dropdown" id="workingboardlist"><span class="caret"></span></a>
+            <ul role="menu" class="dropdown-menu" aria-labelledby="workingboardlist" id="topmenu_workingboardlist"></ul>
+            <div class="headermobilemenu"><i class="fa fa-bars" aria-hidden="true"></i></div>
+        </div>
+        <div class="navbar-collapse collapse" id="navbar">
+            <ul class="nav navbar-nav">
+                <li class="dropdown">
+                    <a class="dropdown-toggle" role="button" type="button" data-toggle="dropdown" id="workflowlist" href="@Url.Action("Index", "Dashboards")"><i class="fa fa-pie-chart"></i>Bảng Thống kê<span class="caret"></span></a>
+                    <ul role="menu" class="dropdown-menu" aria-labelledby="workflowlist" id="topmenu_workingworkflowlist"></ul>
+                </li>
+                <li>
+                    <a  class="dropdown-toggle" role="button" type="button" data-toggle="dropdown" id="worktasklist" href="@Url.Action("Index", "Worktask")"><i class="fa fa-tasks"></i>Danh sách công việc<span class="caret"></span></a>
+                    <ul role="menu" class="dropdown-menu" aria-labelledby="worktasklist" id="topmenu_worktasklist"></ul>
+                </li>
+                <li>
+                    <a aria-expanded="false" role="button" href="@Url.Action("Search", "Elastic")"><i class="fa fa-search"></i> Tìm kiếm</a>
+                </li>
+                <li class="dropdown">
+                    <a aria-expanded="false" role="button" href="@Url.Action("Index", "Reports")"><i class="fa fa-file-excel-o"></i> Báo Cáo </a>
+                </li>
+                @if (User.IsInRole(CategoryService.GetInstance().GetCategoryName(1, Contain.CatType.UserRole)))
+                {
+                    <li>
+                        <a role="button" href="@Url.Action("Index", "Admin")" class="dropdown-toggle"><i class="fa fa-users"></i> Quản trị </a>
+
+                    </li>
+                }
+            </ul>
+            <ul class="nav navbar-top-links navbar-right">
+                <li class="createtaskmenuitem">
+                    <a aria-expanded="false" role="button" data-toggle="modal" data-target="#modal-container-createmodal">
+                        <i class="fa fa-edit"></i> Tạo Công việc
+                    </a>
+                </li>
+                <li class="dropdown">
+                    <a class="dropdown-toggle" role="button" type="button" data-toggle="dropdown" id="userprofilemenu">
+                        <i class="fa fa-user"></i> @if (User.Identity.IsAuthenticated)
+                        {
+                            @:Xin chào, @AccountHelper.GetCurrentUser(User.Identity.Name).DisplayName2
+                        }
+                        <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="userprofilemenu">
+                        <li><a tabindex="-1" href="#" data-id="@Session["UID"]" onclick="getEditUserProfileModal('@Session["UID"]')">Tài khoản</a></li>
+                        <li>
+                            <a href="@Url.Action("LogOut", "Home")">
+                                <i class="fa fa-sign-out"></i> Đăng xuất
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</div>
+<div class="modal fade inmodal" tabindex="-1" role="dialog" aria-hidden="true" style="overflow:auto" aria-labelledby="gridSystemModalLabel" id="modal-edit-user-profile">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content animated fadeIn">
+            <div class="modal-header">
+                <h4 class="modal-title text-left">Thông tin tài khoản</h4>
+            </div>
+            <div id="container-edit-user-profile">
+            </div>
+        </div>
+
+    </div>
+</div>
+<!-- End Update Account Modal -->
+<script type="text/javascript">
+    $(document).ready(function () {
+        toastr.options = {
+            "closeButton": false,
+            "debug": false,
+            "progressBar": false,
+            "positionClass": "toast-top-center",
+            "onclick": null,
+            "showDuration": "400",
+            "hideDuration": "1000",
+            "timeOut": "7000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+        }
+        $('.headermobilemenu').click(function () {
+            $('#navbar').toggle();
+        });
+    });
+    function getEditUserProfileModal(UID) {
+        $.ajax({
+
+            type: "POST",
+            url: "@Url.Action("EditUser", "User")" + "?UID=" + UID,
+            success: function (content) {
+                $("#modal-edit-user-profile").modal('show');
+                $("#container-edit-user-profile").html(content);
+            },
+            error: function (e) {
+                console.log("modal fail");
+            }
+        });
+    }
+    $.ajax({
+        type: "GET",
+        url: "@Url.Action("GetUserBoard", "Kanban")",
+        success: function (response) {
+            data = response.data;
+            var vburl = "@Url.Action("ViewBoard", "Kanban")";
+            var wturl = "@Url.Action("Index", "Worktask")";
+            for (var i = 0; i < data.length; i++)
+            {
+                $('#topmenu_workingboardlist').append('<li><a href="' + vburl + '?boardcode=' + data[i].Code + '">' + data[i].Title + '</a></li>');
+                $('#topmenu_worktasklist').append('<li><a href="' + wturl + '?boardcode=' + data[i].Code + '">' + data[i].Title + '</a></li>');
+            }
+        },
+        error: function (e) {
+            console.log("modal fail");
+        }
+    });
+    $.ajax({
+        type: "GET",
+        url: "@Url.Action("GetUserWorkflow", "Kanban")",
+        success: function (response) {
+            data = response.data;
+            var vburl = "@Url.Action("Index", "Dashboards")";
+            for (var i = 0; i < data.length; i++)
+            {
+                $('#topmenu_workingworkflowlist').append('<li><a href="' + vburl + '?workflow=' + data[i].Id + '">' + data[i].Title + '</a></li>');
+            }
+        },
+    error: function (e) {
+        console.log("modal fail");
+    }
+    });
+</script>
+@if (TempData["message"] != null)
+{
+<script type="text/javascript">
+    var $toast = toastr["success"]('@TempData["Message"]');
+</script>
+}
+<style>
+    .userprofilemenu {
+        position: relative;
+    }
+</style>

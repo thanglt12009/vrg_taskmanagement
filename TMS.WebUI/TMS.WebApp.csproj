@@ -1,0 +1,812 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.4\build\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props" Condition="Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.4\build\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" />
+  <Import Project="..\packages\Microsoft.Net.Compilers.2.1.0\build\Microsoft.Net.Compilers.props" Condition="Exists('..\packages\Microsoft.Net.Compilers.2.1.0\build\Microsoft.Net.Compilers.props')" />
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{73C57A9D-BBEE-4348-999D-4A7A2593011D}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>TMS.WebApp</RootNamespace>
+    <AssemblyName>TMS.WebApp</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <UseIISExpress>true</UseIISExpress>
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+    <UseGlobalApplicationHostFile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+    <Use64BitIISExpress />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <FilesToIncludeForPublish>AllFilesInTheProject</FilesToIncludeForPublish>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Antlr3.Runtime, Version=3.5.0.2, Culture=neutral, PublicKeyToken=eb42632606e9261f, processorArchitecture=MSIL">
+      <HintPath>..\packages\Antlr.3.5.0.2\lib\Antlr3.Runtime.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Castle.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <HintPath>..\packages\Castle.Core.4.0.0\lib\net45\Castle.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Elasticsearch.Net, Version=5.0.0.0, Culture=neutral, PublicKeyToken=96c599bbe3e70f5d, processorArchitecture=MSIL">
+      <HintPath>..\packages\Elasticsearch.Net.5.3.1\lib\net45\Elasticsearch.Net.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EPPlus, Version=4.1.0.0, Culture=neutral, PublicKeyToken=ea159fdaa78159a1, processorArchitecture=MSIL">
+      <HintPath>..\packages\EPPlus.4.1.0\lib\net40\EPPlus.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="IKVM.AWT.WinForms, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
+      <HintPath>..\packages\IKVM.8.1.5717.0\lib\IKVM.AWT.WinForms.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.Beans, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
+      <HintPath>..\packages\IKVM.8.1.5717.0\lib\IKVM.OpenJDK.Beans.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.Charsets, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
+      <HintPath>..\packages\IKVM.8.1.5717.0\lib\IKVM.OpenJDK.Charsets.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.Cldrdata, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
+      <HintPath>..\packages\IKVM.8.1.5717.0\lib\IKVM.OpenJDK.Cldrdata.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.Corba, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
+      <HintPath>..\packages\IKVM.8.1.5717.0\lib\IKVM.OpenJDK.Corba.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.Core, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
+      <HintPath>..\packages\IKVM.8.1.5717.0\lib\IKVM.OpenJDK.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.Jdbc, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
+      <HintPath>..\packages\IKVM.8.1.5717.0\lib\IKVM.OpenJDK.Jdbc.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.Localedata, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
+      <HintPath>..\packages\IKVM.8.1.5717.0\lib\IKVM.OpenJDK.Localedata.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.Management, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
+      <HintPath>..\packages\IKVM.8.1.5717.0\lib\IKVM.OpenJDK.Management.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.Media, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
+      <HintPath>..\packages\IKVM.8.1.5717.0\lib\IKVM.OpenJDK.Media.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.Misc, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
+      <HintPath>..\packages\IKVM.8.1.5717.0\lib\IKVM.OpenJDK.Misc.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.Naming, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
+      <HintPath>..\packages\IKVM.8.1.5717.0\lib\IKVM.OpenJDK.Naming.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.Nashorn, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
+      <HintPath>..\packages\IKVM.8.1.5717.0\lib\IKVM.OpenJDK.Nashorn.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.Remoting, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
+      <HintPath>..\packages\IKVM.8.1.5717.0\lib\IKVM.OpenJDK.Remoting.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.Security, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
+      <HintPath>..\packages\IKVM.8.1.5717.0\lib\IKVM.OpenJDK.Security.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.SwingAWT, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
+      <HintPath>..\packages\IKVM.8.1.5717.0\lib\IKVM.OpenJDK.SwingAWT.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.Text, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
+      <HintPath>..\packages\IKVM.8.1.5717.0\lib\IKVM.OpenJDK.Text.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.Tools, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
+      <HintPath>..\packages\IKVM.8.1.5717.0\lib\IKVM.OpenJDK.Tools.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.Util, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
+      <HintPath>..\packages\IKVM.8.1.5717.0\lib\IKVM.OpenJDK.Util.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.XML.API, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
+      <HintPath>..\packages\IKVM.8.1.5717.0\lib\IKVM.OpenJDK.XML.API.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.XML.Bind, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
+      <HintPath>..\packages\IKVM.8.1.5717.0\lib\IKVM.OpenJDK.XML.Bind.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.XML.Crypto, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
+      <HintPath>..\packages\IKVM.8.1.5717.0\lib\IKVM.OpenJDK.XML.Crypto.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.XML.Parse, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
+      <HintPath>..\packages\IKVM.8.1.5717.0\lib\IKVM.OpenJDK.XML.Parse.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.XML.Transform, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
+      <HintPath>..\packages\IKVM.8.1.5717.0\lib\IKVM.OpenJDK.XML.Transform.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.XML.WebServices, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
+      <HintPath>..\packages\IKVM.8.1.5717.0\lib\IKVM.OpenJDK.XML.WebServices.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.XML.XPath, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
+      <HintPath>..\packages\IKVM.8.1.5717.0\lib\IKVM.OpenJDK.XML.XPath.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="IKVM.Runtime, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
+      <HintPath>..\packages\IKVM.8.1.5717.0\lib\IKVM.Runtime.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="IKVM.Runtime.JNI, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
+      <HintPath>..\packages\IKVM.8.1.5717.0\lib\IKVM.Runtime.JNI.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.Identity.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Identity.Core.2.2.1\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=1.0.4.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.4\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Moq, Version=4.7.9.0, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
+      <HintPath>..\packages\Moq.4.7.9\lib\net45\Moq.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Nest, Version=5.0.0.0, Culture=neutral, PublicKeyToken=96c599bbe3e70f5d, processorArchitecture=MSIL">
+      <HintPath>..\packages\NEST.5.3.1\lib\net45\Nest.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.10.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Ninject, Version=3.2.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <HintPath>..\packages\Ninject.3.2.2.0\lib\net45-full\Ninject.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Ninject.Web.Common, Version=3.2.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <HintPath>..\packages\Ninject.Web.Common.3.2.3.0\lib\net45-full\Ninject.Web.Common.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Ninject.Web.Mvc, Version=3.2.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <HintPath>..\packages\Ninject.MVC5.3.2.1.0\lib\net45-full\Ninject.Web.Mvc.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Ninject.Web.WebApi, Version=3.2.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <HintPath>..\packages\Ninject.Web.WebApi.3.2.4.0\lib\net45-full\Ninject.Web.WebApi.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Ninject.Web.WebApi.WebHost, Version=3.2.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <HintPath>..\packages\Ninject.Web.WebApi.WebHost.3.2.4.0\lib\net45-full\Ninject.Web.WebApi.WebHost.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.DirectoryServices.AccountManagement" />
+    <Reference Include="System.DirectoryServices.Protocols" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Net.Http.Formatting, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.3\lib\net45\System.Net.Http.Formatting.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Http, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.5.2.3\lib\net45\System.Web.Http.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Http.WebHost, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.WebHost.5.2.3\lib\net45\System.Web.Http.WebHost.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Optimization, Version=1.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Web.Optimization.1.1.3\lib\net40\System.Web.Optimization.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="TikaOnDotNet, Version=1.14.2.0, Culture=neutral, PublicKeyToken=fd70f0f601f583f3, processorArchitecture=MSIL">
+      <HintPath>..\packages\TikaOnDotnet.TextExtractor.1.14.2\lib\TikaOnDotNet.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="TikaOnDotNet.TextExtraction, Version=1.14.2.0, Culture=neutral, PublicKeyToken=fd70f0f601f583f3, processorArchitecture=MSIL">
+      <HintPath>..\packages\TikaOnDotnet.TextExtractor.1.14.2\lib\TikaOnDotNet.TextExtraction.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="WebActivatorEx, Version=2.0.0.0, Culture=neutral, PublicKeyToken=7b26dc2a43f6a0d4, processorArchitecture=MSIL">
+      <HintPath>..\packages\WebActivatorEx.2.2.0\lib\net40\WebActivatorEx.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="WebApiContrib.IoC.Ninject, Version=0.9.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\WebApiContrib.IoC.Ninject.0.9.3.0\lib\net40\WebApiContrib.IoC.Ninject.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="WebGrease, Version=1.6.5135.21930, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\WebGrease.1.6.0\lib\WebGrease.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System.Web.Razor">
+      <HintPath>..\packages\Microsoft.AspNet.Razor.3.2.3\lib\net45\System.Web.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Webpages">
+      <HintPath>..\packages\Microsoft.AspNet.Webpages.3.2.3\lib\net45\System.Web.Webpages.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Webpages.Deployment">
+      <HintPath>..\packages\Microsoft.AspNet.Webpages.3.2.3\lib\net45\System.Web.Webpages.Deployment.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Webpages.Razor">
+      <HintPath>..\packages\Microsoft.AspNet.Webpages.3.2.3\lib\net45\System.Web.Webpages.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Helpers">
+      <HintPath>..\packages\Microsoft.AspNet.Webpages.3.2.3\lib\net45\System.Web.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Web.Infrastructure">
+      <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Mvc">
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.2.3\lib\net45\System.Web.Mvc.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="App_Data\dummy.xml" />
+    <Content Include="bin\TMS.WebApp.dll" />
+    <Content Include="bin\TMS.WebApp.pdb" />
+    <Content Include="Content\animate.css" />
+    <Content Include="Content\bootstrap.css" />
+    <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\email.css" />
+    <Content Include="Content\plugins\autocomplete\autocomplete.css" />
+    <Content Include="Content\plugins\awesome-bootstrap-checkbox\awesome-bootstrap-checkbox.css" />
+    <Content Include="Content\plugins\bootstrap-markdown\bootstrap-markdown.min.css" />
+    <Content Include="Content\plugins\bootstrap-rtl\bootstrap-rtl.css" />
+    <Content Include="Content\plugins\bootstrap-rtl\bootstrap-rtl.min.css" />
+    <Content Include="Content\plugins\bootstrapTour\bootstrap-tour.min.css" />
+    <Content Include="Content\plugins\chartist\chartist.min.css" />
+    <Content Include="Content\plugins\chosen\chosen-sprite%402x.png" />
+    <Content Include="Content\plugins\chosen\chosen-sprite.png" />
+    <Content Include="Content\plugins\chosen\chosen.css" />
+    <Content Include="Content\plugins\datapicker\bootstrap-datepicker.min.css" />
+    <Content Include="Content\plugins\datapicker\bootstrap-datepicker3.css" />
+    <Content Include="Content\plugins\datapicker\bootstrap-datepicker3.min.css" />
+    <Content Include="Content\plugins\dataTables\datatables.min.css" />
+    <Content Include="Content\plugins\dropzone\basic.css" />
+    <Content Include="Content\plugins\dropzone\dropzone.css" />
+    <Content Include="Content\plugins\footable\fonts\footable.svg" />
+    <Content Include="Content\plugins\footable\footable.core.css" />
+    <Content Include="Content\plugins\fullcalendar\fullcalendar.css" />
+    <Content Include="Content\plugins\fullcalendar\fullcalendar.print.css" />
+    <Content Include="Content\plugins\iCheck\custom.css" />
+    <Content Include="Content\plugins\iCheck\green%402x.png" />
+    <Content Include="Content\plugins\iCheck\green.png" />
+    <Content Include="Content\plugins\images\bootstrap-colorpicker\alpha-horizontal.png" />
+    <Content Include="Content\plugins\images\bootstrap-colorpicker\alpha.png" />
+    <Content Include="Content\plugins\images\bootstrap-colorpicker\hue-horizontal.png" />
+    <Content Include="Content\plugins\images\bootstrap-colorpicker\hue.png" />
+    <Content Include="Content\plugins\images\bootstrap-colorpicker\saturation.png" />
+    <Content Include="Content\plugins\images\sort.png" />
+    <Content Include="Content\plugins\images\sort_asc.png" />
+    <Content Include="Content\plugins\images\sort_desc.png" />
+    <Content Include="Content\plugins\images\sprite-skin-flat.png" />
+    <Content Include="Content\plugins\images\sprite-skin-flat2.png" />
+    <Content Include="Content\plugins\images\sprite-skin-nice.png" />
+    <Content Include="Content\plugins\images\sprite-skin-simple.png" />
+    <Content Include="Content\plugins\images\spritemap%402x.png" />
+    <Content Include="Content\plugins\images\spritemap.png" />
+    <Content Include="Content\plugins\jqGrid\ui.jqgrid.css" />
+    <Content Include="Content\plugins\jQueryUI\images\animated-overlay.gif" />
+    <Content Include="Content\plugins\jQueryUI\images\ui-bg_flat_0_aaaaaa_40x100.png" />
+    <Content Include="Content\plugins\jQueryUI\images\ui-bg_flat_75_ffffff_40x100.png" />
+    <Content Include="Content\plugins\jQueryUI\images\ui-bg_glass_55_fbf9ee_1x400.png" />
+    <Content Include="Content\plugins\jQueryUI\images\ui-bg_glass_65_ffffff_1x400.png" />
+    <Content Include="Content\plugins\jQueryUI\images\ui-bg_glass_75_dadada_1x400.png" />
+    <Content Include="Content\plugins\jQueryUI\images\ui-bg_glass_75_e6e6e6_1x400.png" />
+    <Content Include="Content\plugins\jQueryUI\images\ui-bg_glass_95_fef1ec_1x400.png" />
+    <Content Include="Content\plugins\jQueryUI\images\ui-bg_highlight-soft_75_cccccc_1x100.png" />
+    <Content Include="Content\plugins\jQueryUI\images\ui-icons_222222_256x240.png" />
+    <Content Include="Content\plugins\jQueryUI\images\ui-icons_2e83ff_256x240.png" />
+    <Content Include="Content\plugins\jQueryUI\images\ui-icons_454545_256x240.png" />
+    <Content Include="Content\plugins\jQueryUI\images\ui-icons_888888_256x240.png" />
+    <Content Include="Content\plugins\jQueryUI\images\ui-icons_cd0a0a_256x240.png" />
+    <Content Include="Content\plugins\jQueryUI\jquery-ui-1.10.4.custom.min.css" />
+    <Content Include="Content\plugins\jQueryUI\jquery-ui.min.css" />
+    <Content Include="Content\plugins\jsTree\32px.png" />
+    <Content Include="Content\plugins\jsTree\39px.png" />
+    <Content Include="Content\plugins\jsTree\40px.png" />
+    <Content Include="Content\plugins\jsTree\style.css" />
+    <Content Include="Content\plugins\jsTree\style.min.css" />
+    <Content Include="Content\plugins\jsTree\throbber.gif" />
+    <Content Include="Content\plugins\ladda\ladda-themeless.min.css" />
+    <Content Include="Content\plugins\ladda\ladda.min.css" />
+    <Content Include="Content\plugins\summernote\summernote-bs3.css" />
+    <Content Include="Content\plugins\summernote\summernote.css" />
+    <Content Include="Content\plugins\sweetalert\sweetalert.css" />
+    <Content Include="Content\plugins\switchery\switchery.css" />
+    <Content Include="Content\style.css" />
+    <Content Include="Content\plugins\toastr\toastr.css" />
+    <Content Include="Content\plugins\toastr\toastr.min.css" />
+    <Content Include="Content\uploadFile\uploadfile.css" />
+    <Content Include="fonts\font-awesome\css\font-awesome.css" />
+    <Content Include="fonts\font-awesome\css\font-awesome.min.css" />
+    <Content Include="fonts\font-awesome\fonts\fontawesome-webfont.svg" />
+    <Content Include="fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="Global.asax" />
+    <Content Include="fonts\glyphicons-halflings-regular.woff2" />
+    <Content Include="fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="Content\bootstrap.min.css.map" />
+    <Content Include="Content\bootstrap.css.map" />
+    <Content Include="Content\plugins\bootstrap-rtl\bootstrap-rtl.css.map" />
+    <Content Include="Content\plugins\footable\fonts\footable.eot" />
+    <Content Include="Content\plugins\footable\fonts\footable.ttf" />
+    <Content Include="Content\plugins\footable\fonts\footable.woff" />
+    <Content Include="fonts\font-awesome\fonts\fontawesome-webfont.eot" />
+    <Content Include="fonts\font-awesome\fonts\fontawesome-webfont.ttf" />
+    <Content Include="fonts\font-awesome\fonts\fontawesome-webfont.woff" />
+    <Content Include="fonts\font-awesome\fonts\fontawesome-webfont.woff2" />
+    <Content Include="fonts\font-awesome\fonts\FontAwesome.otf" />
+    <Content Include="fonts\font-awesome\less\animated.less" />
+    <Content Include="fonts\font-awesome\less\bordered-pulled.less" />
+    <Content Include="fonts\font-awesome\less\core.less" />
+    <Content Include="fonts\font-awesome\less\fixed-width.less" />
+    <Content Include="fonts\font-awesome\less\font-awesome.less" />
+    <Content Include="fonts\font-awesome\less\icons.less" />
+    <Content Include="fonts\font-awesome\less\larger.less" />
+    <Content Include="fonts\font-awesome\less\list.less" />
+    <Content Include="fonts\font-awesome\less\mixins.less" />
+    <Content Include="fonts\font-awesome\less\path.less" />
+    <Content Include="fonts\font-awesome\less\rotated-flipped.less" />
+    <Content Include="fonts\font-awesome\less\stacked.less" />
+    <Content Include="fonts\font-awesome\less\variables.less" />
+    <Content Include="fonts\font-awesome\scss\font-awesome.scss" />
+    <Content Include="fonts\font-awesome\scss\_animated.scss" />
+    <Content Include="fonts\font-awesome\scss\_bordered-pulled.scss" />
+    <Content Include="fonts\font-awesome\scss\_core.scss" />
+    <Content Include="fonts\font-awesome\scss\_fixed-width.scss" />
+    <Content Include="fonts\font-awesome\scss\_icons.scss" />
+    <Content Include="fonts\font-awesome\scss\_larger.scss" />
+    <Content Include="fonts\font-awesome\scss\_list.scss" />
+    <Content Include="fonts\font-awesome\scss\_mixins.scss" />
+    <Content Include="fonts\font-awesome\scss\_path.scss" />
+    <Content Include="fonts\font-awesome\scss\_rotated-flipped.scss" />
+    <Content Include="fonts\font-awesome\scss\_stacked.scss" />
+    <Content Include="fonts\font-awesome\scss\_variables.scss" />
+    <Content Include="Content\plugins\toastr\toastr.scss" />
+    <Content Include="Content\plugins\toastr\toastr.less" />
+    <Content Include="App_Data\ReportsTemplate\monthlyreporttemplate.xlsx" />
+    <Content Include="App_Data\ReportsTemplate\dailyreporttemplate.xlsx" />
+    <None Include="Properties\PublishProfiles\Azure.pubxml" />
+    <None Include="Properties\PublishProfiles\TMS - FTP.pubxml" />
+    <None Include="Properties\PublishProfiles\TMS - Web Deploy.pubxml" />
+    <Content Include="Scripts\app\inspinia.js" />
+    <Content Include="Scripts\app\skin.config.min.js" />
+    <Content Include="Scripts\bootstrap.js" />
+    <Content Include="Scripts\bootstrap.min.js" />
+    <None Include="Properties\PublishProfiles\package.pubxml" />
+    <None Include="Properties\PublishProfiles\tmsdemo webdeploy.pubxml" />
+    <None Include="Properties\PublishProfiles\tmsdemo.pubxml" />
+    <None Include="Scripts\jquery-2.1.1.intellisense.js" />
+    <Content Include="Scripts\jquery-2.1.1.js" />
+    <Content Include="Scripts\jquery-2.1.1.min.js" />
+    <Content Include="Scripts\jquery-2.2.4.min.js" />
+    <None Include="Scripts\jquery-3.1.1.intellisense.js" />
+    <Content Include="Scripts\jquery-3.1.1.js" />
+    <Content Include="Scripts\jquery-3.1.1.min.js" />
+    <Content Include="Scripts\jquery-3.1.1.slim.js" />
+    <Content Include="Scripts\jquery-3.1.1.slim.min.js" />
+    <Content Include="Scripts\jquery.unobtrusive-ajax.js" />
+    <Content Include="Scripts\jquery.unobtrusive-ajax.min.js" />
+    <None Include="Scripts\jquery.validate-vsdoc.js" />
+    <Content Include="Scripts\jquery.validate.date.js" />
+    <Content Include="Scripts\jquery.validate.js" />
+    <Content Include="Scripts\jquery.validate.min.js" />
+    <Content Include="Scripts\jquery.validate.unobtrusive.js" />
+    <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
+    <Content Include="Scripts\modernizr-2.8.3.js" />
+    <Content Include="Scripts\plugins\autocomplete\autocomplete.js" />
+    <Content Include="Scripts\plugins\bootstrap-markdown\bootstrap-markdown.js" />
+    <Content Include="Scripts\plugins\bootstrap-markdown\markdown.js" />
+    <Content Include="Scripts\plugins\bootstrapTour\bootstrap-tour.min.js" />
+    <Content Include="Scripts\plugins\chartJs\Chart.js" />
+    <Content Include="Scripts\plugins\chartJs\Chart.min.js" />
+    <Content Include="Scripts\plugins\chosen\chosen.jquery.js" />
+    <Content Include="Scripts\plugins\datapicker\bootstrap-datepicker.js" />
+    <Content Include="Scripts\plugins\datapicker\bootstrap-datepicker.min.js" />
+    <Content Include="Scripts\plugins\datapicker\bootstrap-datepicker.vi.js" />
+    <Content Include="Scripts\plugins\datapicker\bootstrap-datepicker.vi.min.js" />
+    <Content Include="Scripts\plugins\dataTables\datatables.min.js" />
+    <Content Include="Scripts\plugins\dropzone\dropzone.js" />
+    <Content Include="Scripts\plugins\footable\footable.all.min.js" />
+    <Content Include="Scripts\plugins\fullcalendar\fullcalendar.min.js" />
+    <Content Include="Scripts\plugins\fullcalendar\moment.min.js" />
+    <Content Include="Scripts\plugins\iCheck\icheck.min.js" />
+    <Content Include="Scripts\plugins\jeditable\jquery.jeditable.js" />
+    <Content Include="Scripts\plugins\jqGrid\i18n\grid.locale-ar.js" />
+    <Content Include="Scripts\plugins\jqGrid\i18n\grid.locale-bg.js" />
+    <Content Include="Scripts\plugins\jqGrid\i18n\grid.locale-bg1251.js" />
+    <Content Include="Scripts\plugins\jqGrid\i18n\grid.locale-cat.js" />
+    <Content Include="Scripts\plugins\jqGrid\i18n\grid.locale-cn.js" />
+    <Content Include="Scripts\plugins\jqGrid\i18n\grid.locale-cs.js" />
+    <Content Include="Scripts\plugins\jqGrid\i18n\grid.locale-da.js" />
+    <Content Include="Scripts\plugins\jqGrid\i18n\grid.locale-de.js" />
+    <Content Include="Scripts\plugins\jqGrid\i18n\grid.locale-dk.js" />
+    <Content Include="Scripts\plugins\jqGrid\i18n\grid.locale-el.js" />
+    <Content Include="Scripts\plugins\jqGrid\i18n\grid.locale-en.js" />
+    <Content Include="Scripts\plugins\jqGrid\i18n\grid.locale-es.js" />
+    <Content Include="Scripts\plugins\jqGrid\i18n\grid.locale-fa.js" />
+    <Content Include="Scripts\plugins\jqGrid\i18n\grid.locale-fi.js" />
+    <Content Include="Scripts\plugins\jqGrid\i18n\grid.locale-fr.js" />
+    <Content Include="Scripts\plugins\jqGrid\i18n\grid.locale-gl.js" />
+    <Content Include="Scripts\plugins\jqGrid\i18n\grid.locale-he.js" />
+    <Content Include="Scripts\plugins\jqGrid\i18n\grid.locale-hr.js" />
+    <Content Include="Scripts\plugins\jqGrid\i18n\grid.locale-hr1250.js" />
+    <Content Include="Scripts\plugins\jqGrid\i18n\grid.locale-hu.js" />
+    <Content Include="Scripts\plugins\jqGrid\i18n\grid.locale-id.js" />
+    <Content Include="Scripts\plugins\jqGrid\i18n\grid.locale-is.js" />
+    <Content Include="Scripts\plugins\jqGrid\i18n\grid.locale-it.js" />
+    <Content Include="Scripts\plugins\jqGrid\i18n\grid.locale-ja.js" />
+    <Content Include="Scripts\plugins\jqGrid\i18n\grid.locale-kr.js" />
+    <Content Include="Scripts\plugins\jqGrid\i18n\grid.locale-lt.js" />
+    <Content Include="Scripts\plugins\jqGrid\i18n\grid.locale-mne.js" />
+    <Content Include="Scripts\plugins\jqGrid\i18n\grid.locale-nl.js" />
+    <Content Include="Scripts\plugins\jqGrid\i18n\grid.locale-no.js" />
+    <Content Include="Scripts\plugins\jqGrid\i18n\grid.locale-pl.js" />
+    <Content Include="Scripts\plugins\jqGrid\i18n\grid.locale-pt-br.js" />
+    <Content Include="Scripts\plugins\jqGrid\i18n\grid.locale-pt.js" />
+    <Content Include="Scripts\plugins\jqGrid\i18n\grid.locale-ro.js" />
+    <Content Include="Scripts\plugins\jqGrid\i18n\grid.locale-ru.js" />
+    <Content Include="Scripts\plugins\jqGrid\i18n\grid.locale-sk.js" />
+    <Content Include="Scripts\plugins\jqGrid\i18n\grid.locale-sr-latin.js" />
+    <Content Include="Scripts\plugins\jqGrid\i18n\grid.locale-sr.js" />
+    <Content Include="Scripts\plugins\jqGrid\i18n\grid.locale-sv.js" />
+    <Content Include="Scripts\plugins\jqGrid\i18n\grid.locale-th.js" />
+    <Content Include="Scripts\plugins\jqGrid\i18n\grid.locale-tr.js" />
+    <Content Include="Scripts\plugins\jqGrid\i18n\grid.locale-tw.js" />
+    <Content Include="Scripts\plugins\jqGrid\i18n\grid.locale-ua.js" />
+    <Content Include="Scripts\plugins\jqGrid\i18n\grid.locale-vi.js" />
+    <Content Include="Scripts\plugins\jqGrid\jquery.jqGrid.min.js" />
+    <Content Include="Scripts\plugins\jquery-form\jquery.form.js" />
+    <Content Include="Scripts\plugins\jquery-ui\i18n\jquery-ui-i18n.min.js" />
+    <Content Include="Scripts\plugins\jquery-ui\i18n\jquery.ui.datepicker-af.min.js" />
+    <Content Include="Scripts\plugins\jquery-ui\i18n\jquery.ui.datepicker-ar-DZ.min.js" />
+    <Content Include="Scripts\plugins\jquery-ui\i18n\jquery.ui.datepicker-ar.min.js" />
+    <Content Include="Scripts\plugins\jquery-ui\i18n\jquery.ui.datepicker-az.min.js" />
+    <Content Include="Scripts\plugins\jquery-ui\i18n\jquery.ui.datepicker-be.min.js" />
+    <Content Include="Scripts\plugins\jquery-ui\i18n\jquery.ui.datepicker-bg.min.js" />
+    <Content Include="Scripts\plugins\jquery-ui\i18n\jquery.ui.datepicker-bs.min.js" />
+    <Content Include="Scripts\plugins\jquery-ui\i18n\jquery.ui.datepicker-ca.min.js" />
+    <Content Include="Scripts\plugins\jquery-ui\i18n\jquery.ui.datepicker-cs.min.js" />
+    <Content Include="Scripts\plugins\jquery-ui\i18n\jquery.ui.datepicker-cy-GB.min.js" />
+    <Content Include="Scripts\plugins\jquery-ui\i18n\jquery.ui.datepicker-da.min.js" />
+    <Content Include="Scripts\plugins\jquery-ui\i18n\jquery.ui.datepicker-de.min.js" />
+    <Content Include="Scripts\plugins\jquery-ui\i18n\jquery.ui.datepicker-el.min.js" />
+    <Content Include="Scripts\plugins\jquery-ui\i18n\jquery.ui.datepicker-en-AU.min.js" />
+    <Content Include="Scripts\plugins\jquery-ui\i18n\jquery.ui.datepicker-en-GB.min.js" />
+    <Content Include="Scripts\plugins\jquery-ui\i18n\jquery.ui.datepicker-en-NZ.min.js" />
+    <Content Include="Scripts\plugins\jquery-ui\i18n\jquery.ui.datepicker-eo.min.js" />
+    <Content Include="Scripts\plugins\jquery-ui\i18n\jquery.ui.datepicker-es.min.js" />
+    <Content Include="Scripts\plugins\jquery-ui\i18n\jquery.ui.datepicker-et.min.js" />
+    <Content Include="Scripts\plugins\jquery-ui\i18n\jquery.ui.datepicker-eu.min.js" />
+    <Content Include="Scripts\plugins\jquery-ui\i18n\jquery.ui.datepicker-fa.min.js" />
+    <Content Include="Scripts\plugins\jquery-ui\i18n\jquery.ui.datepicker-fi.min.js" />
+    <Content Include="Scripts\plugins\jquery-ui\i18n\jquery.ui.datepicker-fo.min.js" />
+    <Content Include="Scripts\plugins\jquery-ui\i18n\jquery.ui.datepicker-fr-CA.min.js" />
+    <Content Include="Scripts\plugins\jquery-ui\i18n\jquery.ui.datepicker-fr-CH.min.js" />
+    <Content Include="Scripts\plugins\jquery-ui\i18n\jquery.ui.datepicker-fr.min.js" />
+    <Content Include="Scripts\plugins\jquery-ui\i18n\jquery.ui.datepicker-gl.min.js" />
+    <Content Include="Scripts\plugins\jquery-ui\i18n\jquery.ui.datepicker-he.min.js" />
+    <Content Include="Scripts\plugins\jquery-ui\i18n\jquery.ui.datepicker-hi.min.js" />
+    <Content Include="Scripts\plugins\jquery-ui\i18n\jquery.ui.datepicker-hr.min.js" />
+    <Content Include="Scripts\plugins\jquery-ui\i18n\jquery.ui.datepicker-hu.min.js" />
+    <Content Include="Scripts\plugins\jquery-ui\i18n\jquery.ui.datepicker-hy.min.js" />
+    <Content Include="Scripts\plugins\jquery-ui\i18n\jquery.ui.datepicker-id.min.js" />
+    <Content Include="Scripts\plugins\jquery-ui\i18n\jquery.ui.datepicker-is.min.js" />
+    <Content Include="Scripts\plugins\jquery-ui\i18n\jquery.ui.datepicker-it.min.js" />
+    <Content Include="Scripts\plugins\jquery-ui\i18n\jquery.ui.datepicker-ja.min.js" />
+    <Content Include="Scripts\plugins\jquery-ui\i18n\jquery.ui.datepicker-ka.min.js" />
+    <Content Include="Scripts\plugins\jquery-ui\i18n\jquery.ui.datepicker-kk.min.js" />
+    <Content Include="Scripts\plugins\jquery-ui\i18n\jquery.ui.datepicker-km.min.js" />
+    <Content Include="Scripts\plugins\jquery-ui\i18n\jquery.ui.datepicker-ko.min.js" />
+    <Content Include="Scripts\plugins\jquery-ui\i18n\jquery.ui.datepicker-ky.min.js" />
+    <Content Include="Scripts\plugins\jquery-ui\i18n\jquery.ui.datepicker-lb.min.js" />
+    <Content Include="Scripts\plugins\jquery-ui\i18n\jquery.ui.datepicker-lt.min.js" />
+    <Content Include="Scripts\plugins\jquery-ui\i18n\jquery.ui.datepicker-lv.min.js" />
+    <Content Include="Scripts\plugins\jquery-ui\i18n\jquery.ui.datepicker-mk.min.js" />
+    <Content Include="Scripts\plugins\jquery-ui\i18n\jquery.ui.datepicker-ml.min.js" />
+    <Content Include="Scripts\plugins\jquery-ui\i18n\jquery.ui.datepicker-ms.min.js" />
+    <Content Include="Scripts\plugins\jquery-ui\i18n\jquery.ui.datepicker-nb.min.js" />
+    <Content Include="Scripts\plugins\jquery-ui\i18n\jquery.ui.datepicker-nl-BE.min.js" />
+    <Content Include="Scripts\plugins\jquery-ui\i18n\jquery.ui.datepicker-nl.min.js" />
+    <Content Include="Scripts\plugins\jquery-ui\i18n\jquery.ui.datepicker-nn.min.js" />
+    <Content Include="Scripts\plugins\jquery-ui\i18n\jquery.ui.datepicker-no.min.js" />
+    <Content Include="Scripts\plugins\jquery-ui\i18n\jquery.ui.datepicker-pl.min.js" />
+    <Content Include="Scripts\plugins\jquery-ui\i18n\jquery.ui.datepicker-pt-BR.min.js" />
+    <Content Include="Scripts\plugins\jquery-ui\i18n\jquery.ui.datepicker-pt.min.js" />
+    <Content Include="Scripts\plugins\jquery-ui\i18n\jquery.ui.datepicker-rm.min.js" />
+    <Content Include="Scripts\plugins\jquery-ui\i18n\jquery.ui.datepicker-ro.min.js" />
+    <Content Include="Scripts\plugins\jquery-ui\i18n\jquery.ui.datepicker-ru.min.js" />
+    <Content Include="Scripts\plugins\jquery-ui\i18n\jquery.ui.datepicker-sk.min.js" />
+    <Content Include="Scripts\plugins\jquery-ui\i18n\jquery.ui.datepicker-sl.min.js" />
+    <Content Include="Scripts\plugins\jquery-ui\i18n\jquery.ui.datepicker-sq.min.js" />
+    <Content Include="Scripts\plugins\jquery-ui\i18n\jquery.ui.datepicker-sr-SR.min.js" />
+    <Content Include="Scripts\plugins\jquery-ui\i18n\jquery.ui.datepicker-sr.min.js" />
+    <Content Include="Scripts\plugins\jquery-ui\i18n\jquery.ui.datepicker-sv.min.js" />
+    <Content Include="Scripts\plugins\jquery-ui\i18n\jquery.ui.datepicker-ta.min.js" />
+    <Content Include="Scripts\plugins\jquery-ui\i18n\jquery.ui.datepicker-th.min.js" />
+    <Content Include="Scripts\plugins\jquery-ui\i18n\jquery.ui.datepicker-tj.min.js" />
+    <Content Include="Scripts\plugins\jquery-ui\i18n\jquery.ui.datepicker-tr.min.js" />
+    <Content Include="Scripts\plugins\jquery-ui\i18n\jquery.ui.datepicker-uk.min.js" />
+    <Content Include="Scripts\plugins\jquery-ui\i18n\jquery.ui.datepicker-vi.min.js" />
+    <Content Include="Scripts\plugins\jquery-ui\i18n\jquery.ui.datepicker-zh-CN.min.js" />
+    <Content Include="Scripts\plugins\jquery-ui\i18n\jquery.ui.datepicker-zh-HK.min.js" />
+    <Content Include="Scripts\plugins\jquery-ui\i18n\jquery.ui.datepicker-zh-TW.min.js" />
+    <Content Include="Scripts\plugins\jquery-ui\images\animated-overlay.gif" />
+    <Content Include="Scripts\plugins\jquery-ui\images\ui-bg_flat_0_aaaaaa_40x100.png" />
+    <Content Include="Scripts\plugins\jquery-ui\images\ui-bg_flat_75_ffffff_40x100.png" />
+    <Content Include="Scripts\plugins\jquery-ui\images\ui-bg_glass_55_fbf9ee_1x400.png" />
+    <Content Include="Scripts\plugins\jquery-ui\images\ui-bg_glass_65_ffffff_1x400.png" />
+    <Content Include="Scripts\plugins\jquery-ui\images\ui-bg_glass_75_dadada_1x400.png" />
+    <Content Include="Scripts\plugins\jquery-ui\images\ui-bg_glass_75_e6e6e6_1x400.png" />
+    <Content Include="Scripts\plugins\jquery-ui\images\ui-bg_glass_95_fef1ec_1x400.png" />
+    <Content Include="Scripts\plugins\jquery-ui\images\ui-bg_highlight-soft_75_cccccc_1x100.png" />
+    <Content Include="Scripts\plugins\jquery-ui\images\ui-icons_222222_256x240.png" />
+    <Content Include="Scripts\plugins\jquery-ui\images\ui-icons_2e83ff_256x240.png" />
+    <Content Include="Scripts\plugins\jquery-ui\images\ui-icons_454545_256x240.png" />
+    <Content Include="Scripts\plugins\jquery-ui\images\ui-icons_888888_256x240.png" />
+    <Content Include="Scripts\plugins\jquery-ui\images\ui-icons_cd0a0a_256x240.png" />
+    <Content Include="Scripts\plugins\jquery-ui\jquery-ui.css" />
+    <Content Include="Scripts\plugins\jquery-ui\jquery-ui.js" />
+    <Content Include="Scripts\plugins\jquery-ui\jquery-ui.min.css" />
+    <Content Include="Scripts\plugins\jquery-ui\jquery-ui.min.js" />
+    <Content Include="Scripts\plugins\jsKnob\jquery.knob.js" />
+    <Content Include="Scripts\plugins\jsTree\jstree.min.js" />
+    <Content Include="Scripts\plugins\ladda\ladda.jquery.min.js" />
+    <Content Include="Scripts\plugins\ladda\ladda.min.js" />
+    <Content Include="Scripts\plugins\ladda\spin.min.js" />
+    <Content Include="Scripts\plugins\metisMenu\metisMenu.min.js" />
+    <Content Include="Scripts\plugins\slimscroll\jquery.slimscroll.min.js" />
+    <Content Include="Scripts\plugins\sparkline\jquery.sparkline.min.js" />
+    <Content Include="Scripts\plugins\summernote\summernote.min.js" />
+    <Content Include="Scripts\plugins\sweetalert\sweetalert.min.js" />
+    <Content Include="Scripts\plugins\switchery\switchery.js" />
+    <Content Include="Scripts\plugins\toastr\toastr.min.js" />
+    <Content Include="Scripts\worktask\worktask.detail.js" />
+    <Content Include="Scripts\worktask\worktask.editform.js" />
+    <Content Include="Scripts\worktask\wt.js" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="App_Start\BundleConfig.cs" />
+    <Compile Include="App_Start\NinjectWebCommon.cs" />
+    <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\AdminController.cs" />
+    <Compile Include="Controllers\BaseController.cs" />
+    <Compile Include="Controllers\DashboardsController.cs" />
+    <Compile Include="Controllers\UserController.cs" />
+    <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\KanbanController.cs" />
+    <Compile Include="Controllers\ReportsController.cs" />
+    <Compile Include="Controllers\ElasticController.cs" />
+    <Compile Include="Controllers\WorktaskApiController.cs" />
+    <Compile Include="Controllers\WorktaskController.cs" />
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="HtmlHelpers\CompareObjExtensions.cs" />
+    <Compile Include="HtmlHelpers\HTMLHelperExtensions.cs" />
+    <Compile Include="HtmlHelpers\PagingHelpers.cs" />
+    <Compile Include="Infrastructure\NinjectDependencyResolver.cs" />
+    <Compile Include="Models\AccountListViewModel.cs" />
+    <Compile Include="Models\AccountViewModel.cs" />
+    <Compile Include="Models\DashboardViewModel.cs" />
+    <Compile Include="Models\ElasticSearchViewModel.cs" />
+    <Compile Include="Models\KanbanInfoModel.cs" />
+    <Compile Include="Models\KanbanListViewModel.cs" />
+    <Compile Include="Models\KanbanViewModel.cs" />
+    <Compile Include="Models\MonthlyReportRecordModel.cs" />
+    <Compile Include="Models\PagingInfo.cs" />
+    <Compile Include="Models\SearchResult.cs" />
+    <Compile Include="Models\UploadFileModel.cs" />
+    <Compile Include="Models\WorktaskListViewModel.cs" />
+    <Compile Include="Models\WorktaskSimpleModel.cs" />
+    <Compile Include="Models\WorktaskViewModel.cs" />
+    <Compile Include="MyProvider.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\TaskDepartmentDailyReport.cs" />
+    <Compile Include="Services\WorktaskService.cs" />
+    <Compile Include="Services\BoardService.cs" />
+    <Compile Include="Services\WorkflowService.cs" />
+    <Compile Include="Services\CategoryService.cs" />
+    <Compile Include="Services\ElasticConfig.cs" />
+    <Compile Include="Services\ElasticIndexService.cs" />
+    <Compile Include="Services\ElasticSearchService.cs" />
+    <Compile Include="Services\ISearchService.cs" />
+    <Compile Include="Services\KanbanService.cs" />
+    <Compile Include="Services\ServiceBuilder.cs" />
+    <Compile Include="Services\TaskDailyReport.cs" />
+    <Compile Include="Services\TaskMonthlyReport.cs" />
+    <Compile Include="Services\UserPermissionService.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\web.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="packages.config" />
+    <Content Include="Views\_ViewStart.cshtml" />
+    <Content Include="Views\Shared\_Layout.cshtml" />
+    <Content Include="Views\Shared\CreateModal.cshtml" />
+    <Content Include="Views\Worktask\Detail.cshtml" />
+    <Content Include="Views\Worktask\EditModal.cshtml" />
+    <Content Include="Views\Shared\_Footer.cshtml" />
+    <Content Include="Views\Shared\_TopNavbar.cshtml" />
+    <Content Include="Scripts\jquery-2.1.1.min.map" />
+    <Content Include="Scripts\plugins\upload\upload.js" />
+    <Content Include="Views\Worktask\Index.cshtml" />
+    <Content Include="Views\Dashboards\Index.cshtml" />
+    <Content Include="Scripts\worktask\worktask.resetform.js" />
+    <Content Include="Views\Kanban\ViewBoard.cshtml" />
+    <Content Include="Views\Kanban\_Kanban.cshtml" />
+    <Content Include="Views\Admin\AddUserModal.cshtml" />
+    <Content Include="Views\Admin\ListAccount.cshtml" />
+    <Content Include="Views\Admin\_EditAttachment.cshtml" />
+    <Content Include="Views\Reports\Index.cshtml" />
+    <Content Include="Views\Shared\_EditAttachment.cshtml" />
+    <Content Include="Views\Home\Login.cshtml" />
+    <Content Include="Views\Home\Error.cshtml" />
+    <Content Include="Views\Elastic\Search.cshtml" />
+    <Content Include="Views\Home\_LoginPartialView.cshtml" />
+    <Content Include="Views\Admin\EditUserModal.cshtml" />
+    <Content Include="Views\Admin\Index.cshtml" />
+    <Content Include="Views\Elastic\_SearchResult.cshtml" />
+    <Content Include="Views\Reports\SendMonthlyReport.cshtml" />
+    <Content Include="Views\Reports\SendDailyReport.cshtml" />
+    <Content Include="Views\User\EditUserModal.cshtml" />
+    <Content Include="Scripts\jquery-3.1.1.slim.min.map" />
+    <Content Include="Scripts\jquery-3.1.1.min.map" />
+    <Content Include="Views\Kanban\Index.cshtml" />
+    <Content Include="Views\Kanban\CreateBoard.cshtml" />
+    <Content Include="Views\Kanban\EditBoardModal.cshtml" />
+    <Content Include="Views\Worktask\MoveModal.cshtml" />
+    <Content Include="Views\Admin\ListCategory.cshtml" />
+    <Content Include="Views\Admin\AddCategoryModal.cshtml" />
+    <Content Include="Views\Admin\EditCategoryModal.cshtml" />
+    <None Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+    <None Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="Microsoft.Office.Core">
+      <Guid>{2DF8D04C-5BFA-101B-BDE5-00AA0044DE52}</Guid>
+      <VersionMajor>2</VersionMajor>
+      <VersionMinor>7</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>primary</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+    <COMReference Include="Microsoft.Office.Interop.Excel">
+      <Guid>{00020813-0000-0000-C000-000000000046}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>8</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>primary</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+    <COMReference Include="VBIDE">
+      <Guid>{0002E157-0000-0000-C000-000000000046}</Guid>
+      <VersionMajor>5</VersionMajor>
+      <VersionMinor>3</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>primary</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TMS.Domain\TMS.Domain.csproj">
+      <Project>{72a1f289-5618-440d-a10d-604476e567c5}</Project>
+      <Name>TMS.Domain</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>True</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>31038</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost:31038/</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Microsoft.Net.Compilers.2.1.0\build\Microsoft.Net.Compilers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Net.Compilers.2.1.0\build\Microsoft.Net.Compilers.props'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.4\build\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.4\build\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
+  </Target>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

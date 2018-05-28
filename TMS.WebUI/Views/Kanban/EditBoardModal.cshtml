@@ -1,0 +1,57 @@
+﻿@model TMS.WebApp.Models.KanbanInfoModel
+@using TMS.WebApp.Services
+@using TMS.Domain.Common
+
+@using (Html.BeginForm("SaveBoard", "Kanban", FormMethod.Post, new { @id = "formEditBoard" }))
+{
+    <div class="modal-body">
+        <div class="form-horizontal">
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+            <!--BOARD TITLE-->
+            <div class="form-group">
+                <div class="col-md-2">
+                    @Html.LabelFor(model => model.Title, htmlAttributes: new { @class = "control-label" })
+                </div>
+                <div class="col-md-8">
+                    @Html.HiddenFor(model => model.Id, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.EditorFor(model => model.Title, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Title, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-2">
+                    @Html.LabelFor(model => model.Code)
+                </div >
+                <div class="col-md-8">
+                    @Html.TextBoxFor(model => model.Code, new { @class = "form-control", @readonly = "readonly" })
+                </div>
+            </div>
+            <!--Members-->
+            <div class="form-group">
+                <div class="col-md-2">
+                    <label class="control-label">Thành viên</label>
+                </div>
+                <div class="col-md-8">
+                    <div id="search_bar_boardmemberlist_edit"></div>
+                    @{ 
+                        var selectedmember = "";
+                        foreach(var item in Model.BoardMemberList)
+                        {
+                            selectedmember += item + ",";
+                        }
+                    }
+                    <input name="BoardMemberList" id="boardmemberlistedit" data-tag="@selectedmember" type="hidden" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="button" value="Hủy" class="btn btn-white reset-button" data-dismiss="modal" />
+                <input type="submit" value="Cập nhật" class="btn btn-primary" />
+            </div>
+        </div>
+    </div>
+}

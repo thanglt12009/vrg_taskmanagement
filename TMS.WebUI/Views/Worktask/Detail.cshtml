@@ -1,0 +1,347 @@
+﻿@model TMS.Domain.Entities.Worktask
+@using TMS.Domain.Common
+@using TMS.WebApp.Services
+@using TMS.WebApp.Models
+@{
+    ViewBag.Title = "Chi tiết công việc";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script>
+    @{
+        HttpCookie cookie = Request.Cookies.Get(User.Identity.Name + "lastviewedboard");
+        string boardid = (cookie == null ? String.Empty : cookie.Value);
+        int id = 0;
+        int.TryParse(boardid, out id);
+        var boardcode = KanbanService.GetInstance().GetBoardCode(id);
+    }
+    var taskmgr_current_board_code = "@boardcode";
+</script>
+<div class="animated fadeInRight">
+    <div class="row">
+        <input type="hidden" value="@User.Identity.Name" id="currentUser" />
+        <input type="hidden" value="@DateTime.Now.ToShortTimeString()" id="timeComment" />
+        <input type="hidden" value="@DateTime.Now.ToShortDateString()" id="dateComment" />
+    </div>
+    <div class="row">
+        <div class="ibox">
+            <div class="ibox-title">
+                <div class="ibox-tools pull-left">
+                    <div class="row">
+                        <ol class="breadcrumb">
+                            <li>
+                                @if (Request.Params["ReturnUrl"] != null)
+                                {
+                                    <a href="@Request.Params["ReturnUrl"]"><strong>@Model.Board.Title</strong></a>
+                                }
+                                else
+                                {
+                                    <a href="@Url.Action("Index", "Worktask", new { boardcode = Model.Board.Code })"><strong>Danh sách Công việc</strong></a>
+                                }
+
+                            </li>
+                            <li class="active">
+                                <strong><span> @Html.DisplayTextFor(model => model.Title)</span></strong>
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+            <div class="ibox-content">
+                <div class="row">
+                    <div class="form-inline">
+                        <button href="#" data-toggle="modal" data-target="#modal-container-editmodal" class="btn btn-primary form-control">Chỉnh sửa</button>
+
+                        @if (User.IsInRole(CategoryService.GetInstance().GetCategoryName(1, Contain.CatType.UserRole)) || User.IsInRole(CategoryService.GetInstance().GetCategoryName(2, Contain.CatType.UserRole)))
+                        {
+                            <buton href="#" data-toggle="modal" data-target="#modal-container-deletemodal" class="btn btn-danger form-control">Xóa</buton>
+                        }
+                        @Html.Raw(ViewBag.NextStatus)
+                        <button href="#" data-toggle="modal" data-target="#modal-container-movemodal" class="btn btn-primary form-control">Chuyển bảng</button>
+                    </div>
+                </div>
+                <div class="row m-t-md dashed-border">
+                    <div class="col-lg-4">
+                        <dl class="dl-horizontal">
+                            <dt>@Html.LabelFor(model => model.Status):</dt>
+                            <dd>@Html.GetCatName((int)Model.Status, WorkflowService.GetInstance().GetStateList(Model.Board.WorkflowID))  </dd>
+                        </dl>
+                    </div>
+                    <div class="col-lg-4">
+                        <dl class="dl-horizontal">
+                            <dt>@Html.LabelFor(model => model.CreationDate):</dt>
+                            <dd>@Model.CreationDate.ToShortDateString()</dd>
+                        </dl>
+                    </div>
+                    <div class="col-lg-4">
+                        <dl class="dl-horizontal">
+                            <dt>@Html.LabelFor(model => model.LastUpdateDateTime):</dt>
+                            <dd>@Html.ValueFor(model => model.LastUpdateDateTime, "{0:dd/MM/yyyy HH:mm:ss}")</dd>
+                        </dl>
+                    </div>
+                </div>
+                <div class="row m-t-md">
+                    <div class="col-lg-4 dashed-border">
+                        <dl class="dl-horizontal">
+                            <dt>@Html.LabelFor(model => model.MetaInfoDocumentNo):</dt>
+                            <dd>@Model.MetaInfoDocumentNo</dd>
+                            @{var text = (Model.MetaInfoToVRGDateTime == null ? "" : @Model.MetaInfoToVRGDateTime.Value.ToShortDateString());}
+                            <dt>@Html.LabelFor(model => model.MetaInfoToVRGDateTime):</dt>
+                            <dd>@text</dd>
+                            <dt>@Html.LabelFor(model => model.MetaInfoToDepartmentDateTime):</dt>
+                            @{text = (Model.MetaInfoToDepartmentDateTime == null ? "" : @Model.MetaInfoToDepartmentDateTime.Value.ToShortDateString());}
+                            <dd>@text</dd>
+                        </dl>
+                    </div>
+                    <div class="col-lg-4 dashed-border">
+                        <dl class="dl-horizontal">
+                            <dt>@Html.LabelFor(model => model.TaskType):</dt>
+                            <dd>@Html.GetCatName((int)Model.TaskType, CategoryService.GetInstance().GetCategoryList(Contain.CatType.Category))</dd>
+                            <dt>@Html.LabelFor(model => model.MetaInfoCompany):</dt>
+                            <dd>@Html.GetCatName((Model.MetaInfoCompany == null ? 0 : (int)Model.MetaInfoCompany), CategoryService.GetInstance().GetCategoryList(Contain.CatType.Company))</dd>
+                            <dt>@Html.LabelFor(model => model.Assignee)</dt>
+                            <dd>@AccountHelper.GetUserFullname(Model.AssigneeAcc.UserName)</dd>
+                        </dl>
+                    </div>
+                    <div class="col-lg-4 dashed-border">
+                        <dl class="dl-horizontal">@{ Model.Director = (Model.Director == null ? 0 : Model.Director); }
+                            <dt>@Html.LabelFor(model => model.Owner):</dt>
+                            <dd>@AccountHelper.GetUserFullname(Model.OwnerAcc.UserName)</dd>
+                            <dt>@Html.LabelFor(model => model.Director):</dt>
+                            @{text = (Model.DirectorAcc == null ? string.Empty : AccountHelper.GetUserFullname(Model.DirectorAcc.UserName));}
+                            <dd>@text</dd>@{ Model.CouncilMember = (Model.CouncilMember == null ? 0 : Model.CouncilMember); }
+                            <dt>@Html.LabelFor(model => model.CouncilMember):</dt>
+                            @{text = (Model.CouncilMemberAcc == null ? string.Empty : AccountHelper.GetUserFullname(Model.CouncilMemberAcc.UserName));}
+                            <dd>@text</dd>
+                        </dl>
+                    </div>
+                </div>
+                <div class="row m-t-md dashed-border">
+                    <div class="col-lg-4">
+                        <dl class="dl-horizontal">
+                            <dt>@Html.LabelFor(model => model.Description):</dt>
+                            @{
+                                var desc = (Model.Description == null ? String.Empty : Model.Description.Replace("\r\n", "<BR/>").Replace("\n", "<BR/>"));
+                            }
+                            <dd>@Html.Raw(desc)</dd>
+                        </dl>
+                    </div>
+                    <div class="col-lg-4">
+                        <dl class="dl-horizontal">
+                            <dt>@Html.LabelFor(model => model.PlannedStartDate):</dt>
+                            <dd>@Html.ValueFor(model => model.PlannedStartDate, "{0:dd/MM/yyyy HH:mm:ss}")</dd>
+                            <dt>@Html.LabelFor(model => model.PlannedEndDate):</dt>
+                            <dd>@Html.ValueFor(model => model.PlannedEndDate, "{0:dd/MM/yyyy HH:mm:ss}")</dd>
+                        </dl>
+                    </div>
+                    <div class="col-lg-3">
+                        <dl class="dl-horizontal">
+                            <dt>@Html.LabelFor(model => model.ActualStartDate):</dt>
+                            <dd>@Html.ValueFor(model => model.ActualStartDate, "{0:dd/MM/yyyy HH:mm:ss}")</dd>
+                            <dt>@Html.LabelFor(model => model.ActualEndDate):</dt>
+                            <dd>@Html.ValueFor(model => model.ActualEndDate, "{0:dd/MM/yyyy HH:mm:ss}")</dd>
+                        </dl>
+                    </div>
+                </div>
+                <div class="row m-t-md">
+                    <div class="col-lg-10">
+                        <dl class="dl-horizontal">
+                            <dt class="m-t-lg">File đính kèm:</dt>
+                            <dd class="m-t-lg"><div id="fileuploader"><i class="fa fa-plus"></i>Add files</div></dd>
+                            <dt></dt>
+                            <dd class="m-t-lg">
+                                <div class="col-lg-10">
+                                    @foreach (var item in Model.Attachment)
+                                    {
+                                        <div class="row dashed-border">
+                                            <div class="col-lg-6">
+                                                <dl class="dl-horizontal">
+                                                    <dt>Tập tin đính kèm: </dt>
+                                                    <dd>
+                                                        <a href="@Url.Action("DownloadFile","Worktask", new {path = @item.StoredPath })">@item.Name</a>
+                                                        <a onclick="RemoveAttachment('@Url.Action("DeleteUploaderFile","Worktask", new {path = @item.StoredPath, id = @item.AttachmentID, taskId = Model.WorktaskID })')"><i class="fa fa-trash-o"></i></a>
+                                                    </dd>
+                                                    <dt>Loại công văn: </dt>
+                                                    <dd>@item.ArchiveType</dd>
+                                                    <dt>Người nhận: </dt>
+                                                    <dd>@item.Receiver</dd>
+                                                    <dt>Số hồ sơ lưu: </dt>
+                                                    <dd>@item.ArchiveNo</dd>
+                                                </dl>
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <dl class="dl-horizontal">
+                                                    <dt>&nbsp;</dt>
+                                                    <dd>&nbsp;</dd>
+                                                    <dt>Số công văn: </dt>
+                                                    <dd>@item.AttachmentCode</dd>
+                                                    <dt>Ngày nhận: </dt>
+                                                    <dd>@Html.ValueFor(m => item.Date, "{0:dd/MM/yyyy}")</dd>
+                                                    <dt>Vị trí lưu trữ: </dt>
+                                                    <dd>@item.StorageLocation</dd>
+                                                </dl>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            </dd>
+                        </dl>
+                    </div>
+                </div>
+                <div class="row m-t-md">
+                    <div class="col-lg-10">
+                        <dl class="dl-horizontal">
+                            <dt>Công việc liên quan:</dt>
+                            <dd>&nbsp;</dd>
+                            <dt></dt>
+                            <dd>
+                                <div class="col-lg-10">
+                                    @foreach (var item in Model.TaskMetas)
+                                    {
+                                        if (item.MetaKey == "RelatedTask")
+                                        {
+                                            <strong><a href="@Url.Action("Detail","Worktask", new { taskcode = item.MetaValue, ReturnUrl = Request.Url.PathAndQuery })">@item.MetaValue</a></strong>
+                                        }
+                                    }
+                                </div>
+                            </dd>
+                        </dl>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="panel-heading">
+                        <div class="panel-options">
+                            <ul class="nav nav-tabs">
+                                <li class="active"><a href="#tab-1" data-toggle="tab">Comment</a></li>
+                                <li class=""><a href="#tab-2" data-toggle="tab">Lịch sử</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        <div class="tab-content">
+                            <div class="tab-pane active" id="tab-1">
+                                <input type="hidden" id="TaskID" value="@Model.WorktaskID" />
+                                <div class="feed-activity-list" id="listComment">
+                                    @foreach (var item in Model.Comment.OrderByDescending(x => x.Id))
+                                    {
+                                        <div class="feed-element">
+                                            <div class="media-body ">
+                                                <small class="pull-right">@item.RelativeTime</small>
+                                                <strong>@item.Account.UserName</strong> đăng một bình luận
+                                                <small class="text-muted">  @item.CommentDate.ToShortTimeString() - @item.CommentDate.ToShortDateString()</small>
+                                                <div class="well">
+                                                    @item.CommentContent
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                    <div class="feed-element">
+                                        <textarea class="form-control" id="CommentContent" rows="5"></textarea>
+                                        <button class="btn btn-primary comment" id="sendComment">Gửi</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane" id="tab-2">
+                                <div class="table-responsive">
+                                    @if (Model.TaskHistories.Count() < 1)
+                                    {
+                                        <h4>Không có hoạt động nào</h4>
+                                    }
+                                    else
+                                    {
+                                        <table class="table table-hover table-striped table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th>Hoạt động</th>
+                                                    <th>Cập nhật</th>
+                                                    <th>Người thực hiện</th>
+                                                    <th>Thời điểm thực hiện</th>
+                                                    <th>Nội dung trước đó</th>
+                                                    <th>Nội dung thay đổi</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var item in Model.TaskHistories)
+                                                {
+                                                    <tr>
+                                                        <td>
+                                                            <span class="label label-primary"><i class="fa fa-check"></i> @item.Action</span>
+                                                        </td>
+                                                        <td>
+                                                            @item.UpdatedField
+                                                        </td>
+                                                        <td>
+                                                            @item.UpdatedUserAcc.UserName
+                                                        </td>
+                                                        <td>
+                                                            @item.UpdatedDateTime
+                                                        </td>
+                                                        <td>
+                                                            @item.OriginalValue
+                                                        </td>
+                                                        <td>
+                                                            @item.NewValue
+                                                        </td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+    @Html.Partial("EditModal", @Model)
+    @Html.Partial("_EditAttachment", new TMS.Domain.Entities.Worktask(), new ViewDataDictionary { { "action", "detail" } })
+@{ 
+        var moveModel = new MoveTaskViewModel
+        {
+            BoardID = Model.BoardID,
+            StateID = (Model.WorkflowInstance.CurrentStateID == null ? 0 : (int)Model.WorkflowInstance.CurrentStateID),
+            WorktaskID = Model.WorktaskID
+        };
+    }
+    @Html.Partial("MoveModal", @moveModel)
+    <div id="modal-container-deletemodal" class="modal fade inmodal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content animated fadeIn">
+                <div class="modal-header">
+                    <h4 class="modal-title text-left">Delete Task</h4>
+                </div>
+                @using (Html.BeginForm("Delete", "Worktask", new { id = Model.WorktaskID }, FormMethod.Post))
+            {
+                    <div class="modal-body">
+                        <div class="form-horizontal">
+                            Bạn có chắc chắn sẽ xóa task này ?
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <div class="form-group">
+                            <div class="col-md-offset-2 col-md-10">
+                                <input type="button" value="Hủy bỏ" class="btn btn-white" data-dismiss="modal" />
+                                <input type="submit" value="Xóa" class="btn btn-primary" />
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+</div>
+<script src="~/Scripts/worktask/worktask.detail.js"></script>
+<script type="text/javascript">
+    (function () {
+        DetailWorkTasks.init(@Html.Raw(Json.Encode(Model.Attachment)));
+    })();
+</script>
+<style>
+    .createtaskmenuitem {
+        display: inline-block !important;
+    }
+</style>

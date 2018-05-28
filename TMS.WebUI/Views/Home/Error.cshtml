@@ -1,0 +1,25 @@
+﻿@{
+    ViewBag.Title = "Error";
+    Layout = "~/Views/Shared/_LayoutLogin.cshtml";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="error-template">
+                <h1>
+                    <span class="glyphicon glyphicon-exclamation-sign"></span> Không có quyền truy cập...
+                </h1>
+                </br>
+                <div class="error-actions">
+                    <a href="@Url.Action("Index", "Worktask")" class="btn btn-primary btn-lg">
+                        <span class="glyphicon glyphicon-home"></span>
+                        Trở lại trang chủ
+                    </a>
+                    @*<a href="@Url.Action("Login")" class="btn btn-default btn-lg"><span><i class="fa fa-sign-out"></i></span>Quay về trang đăng nhập</a>*@
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

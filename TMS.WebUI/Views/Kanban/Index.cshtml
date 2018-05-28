@@ -1,0 +1,146 @@
+﻿@model TMS.WebApp.Models.KanbanListViewModel
+@using TMS.Domain.Common
+@using TMS.WebApp.Services
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/Content/plugins/autocomplete/autocomplete.css" rel="stylesheet" />
+<div class="animated fadeInRight">
+    <div class="ibox">
+        <div class="ibox-title">
+            <div class="ibox-tools">
+                <div class="pull-left">
+                    <h3>Danh sách Bảng công việc</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="ibox">
+        <div class="row agile-list">
+            @foreach (var item in Model.BoardList)
+            {
+                <div class="col-lg-3 agile-detail boarditem">
+                    <div class="ibox-content">
+                        <strong><a href="@Url.Action("ViewBoard","Kanban", new { boardcode = item.Code })">@item.Title</a></strong>
+                        @if (item.Owner.UID == AccountHelper.GetCurrentUser(User.Identity.Name).UID)
+                        {
+                            <a href="#" class="pull-right" data-toggle="modal" data-id="@item.Id" onclick="getEditBoardModal('@item.Id')"><i class="fa fa-edit" aria-hidden="true"></i></a>
+                        }
+                        <div class="agile-detail">
+                            <div class="form-horizontal">
+                                <i class="fa fa-user"></i> @(AccountHelper.GetUserFullname(item.Owner.UserName))
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+            <div class="col-lg-3 agile-detail boarditem newboard">
+                <div class="ibox-content" style="height: 78px;">
+                    <strong><a data-toggle="modal" data-target="#modal-container-createboardmodal" href="#">Tạo bảng công việc mới</a></strong>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@{
+    Html.RenderPartial("CreateBoard", new TMS.WebApp.Models.KanbanInfoModel());
+}
+<div class="modal fade inmodal" tabindex="-1" role="dialog" aria-hidden="true" style="overflow:auto" aria-labelledby="gridSystemModalLabel" id="modal-edit-board">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content animated fadeIn">
+            <div class="modal-header">
+                <h4 class="modal-title text-left">Cập nhật Bảng Công Việc</h4>
+            </div>
+            <div id="container-edit-board"></div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    var MemberList = [];
+    $(document).ready(function () {
+        $.ajax({
+            type: 'GET',
+            url: '/Worktask/GetAccount',
+            success: function (data) {
+                for (var i = 0; i < data.source.length; i++) {
+                    MemberList.push({ value: data.source[i] });
+                }
+            },
+            error: function (msg) {
+                alert("error");
+            }
+        });
+    });
+    function getEditBoardModal(Id) {
+        console.log("EDIT BOARD ACTIVATE");
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("EditBoard", "Kanban")" + "?id=" + Id,
+            success: function (content) {
+                $("#modal-edit-board").modal('show');
+                $("#container-edit-board").html(content);
+                initFormEditBoard();
+            },
+            error: function (e) {
+                console.log("modal fail");
+            }
+        });
+    }
+    function initFormEditBoard()
+    {
+        var config = {
+            lists: {
+                Members: {
+                    optionHTML: '{name}',
+                    options: MemberList
+                }
+            }
+        };
+        $('#boardmemberlistedit')[0].widget = new AutoComplete('search_bar_boardmemberlist_edit', config);
+        var selectedmember = $('#boardmemberlistedit').attr('data-tag').split(",");
+        var SelectedMebers = [];
+        for (var i = 0; i < selectedmember.length; i++) {
+            if (selectedmember[i].length > 0) {
+                for (var j = 0; j < MemberList.length; j++) {
+                    if (MemberList[j].value.id == parseInt(selectedmember[i])) {
+                        SelectedMebers.push([MemberList[j]]);
+                    }
+                }
+            }
+        }
+        $('#boardmemberlistedit')[0].widget.setValue(SelectedMebers);
+        $('#formEditBoard').submit(function (event) {
+            event.preventDefault();
+            var $form = $(this);
+            var widget = $('#boardmemberlistedit')[0].widget;
+            var selectedmember = widget.getValue();
+            var selectedids = [];
+            for (var i = 0; i < selectedmember.length; i++) {
+                selectedids.push(selectedmember[i][0].value.id);
+            }
+            var url = $form.attr('action');
+            var formSubmit = $form.serializeObject();
+            formSubmit.BoardMemberList = selectedids;
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: formSubmit,
+                success: function (response) {
+                    if (response.success) {
+                        toastr["success"](response.message);
+                        window.location.href = response.redirectUrl;
+                    } else {
+                        toastr["error"](response.message);
+                        if (typeof response.redirectUrl != 'undefined') {
+                            window.location.href = response.redirectUrl;
+                        }
+                    }
+                },
+                error: function (response) {
+                    toastr["error"](response.message);
+                }
+            });
+        });
+    }
+</script>

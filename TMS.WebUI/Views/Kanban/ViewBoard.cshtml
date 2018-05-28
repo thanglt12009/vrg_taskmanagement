@@ -1,0 +1,180 @@
+﻿@model TMS.WebApp.Models.KanbanViewModel
+@using TMS.Domain.Common
+@using TMS.WebApp.Services
+
+@{
+    ViewBag.Title = "Kanban";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="animated fadeInRight">
+    <div class="row">
+        <div class="ibox">
+            <div class="ibox-title">
+                <div class="ibox-tools">
+                    <div class="pull-left">
+                        <h3>Bảng công việc - @Model.Board.Title</h3>
+                    </div>
+                    <a class="collapse-link">
+                        <i class="fa fa-chevron-down"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="ibox-content board-filter">
+                <div class="row no-gutter">
+                    @*@{ Html.EnableClientValidation(false); }*@
+                    @using (Ajax.BeginForm("List", "Kanban", new AjaxOptions { HttpMethod = "POST", UpdateTargetId = "kanbanDisplay", OnBegin = "deactive", OnSuccess = "active", OnFailure = "active" }, new { @id = "searchForm" }))
+                    {
+                        @Html.HiddenFor(m => m.BoardCode)
+                        <input type="hidden" name="KanbanReturnUrl" id="KanbanReturnUrl" value="@Request.Url.PathAndQuery" />
+                        <div class="col-lg-12">
+                            <div class="col-lg-2">
+                                <div class="row form-group small-gutter ">
+                                    <div class=""><label class="small">Loại công việc</label></div>
+                                    <div class="col-xs-12">@Html.DropDownListFor(m => m.TaskType, CategoryService.GetInstance().GetCategoryList(Contain.CatType.Category), new { @class = "form-control filter-by-type dropdown", @id="FilterTaskType" })</div>
+                                </div>
+                            </div>
+                            <div class="col-lg-1">
+                                <div class="row form-group small-gutter">
+                                    <div>
+                                        <label class="small">Người làm</label>
+                                    </div>
+                                    <div class="col-lg-12">
+                                        @Html.EditorFor(m => m.AsigneeName, new { htmlAttributes = new { @class = "form-control", @id = "filter-by-asignee" } })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-1">
+                                <div class="row form-group small-gutter">
+                                    <div>
+                                        <label class="small">Độ ưu tiên</label>
+                                    </div>
+                                    <div class="col-lg-12">
+                                        @Html.DropDownListFor(m => m.TaskPriority, CategoryService.GetInstance().GetCategoryList(Contain.CatType.Priority), new { @class = "form-control filter-by-priority dropdown small" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3">
+                                <div class="row form-group small-gutter">
+                                    <label class="small">Ngày bắt đầu</label>
+                                    <div class="col-lg-12">
+                                        <div class="input-daterange input-group" id="datepicker">
+                                            @Html.EditorFor(m => m.PlanStartMin, new { htmlAttributes = new { @class = "form-control planstart_min", @id = "planstart_min", @value = "" } })
+                                            <span class="input-group-addon">~</span>
+                                            @Html.EditorFor(m => m.PlanStartMax, new { htmlAttributes = new { @class = "form-control", @id = "planstart_max", @value = "" } })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3">
+                                <div class="row form-group small-gutter">
+                                    <label class="small">Ngày kết thúc </label>
+                                    <div class="col-lg-12">
+                                        <div class="input-daterange input-group" id="datepicker">
+                                            @Html.EditorFor(m => m.PlanEndMin, new { htmlAttributes = new { @class = "form-control", @value = "" } })
+                                            <span class="input-group-addon">~</span>
+                                            @Html.EditorFor(m => m.PlanEndMax, new { htmlAttributes = new { @class = "form-control", @value = "" } })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-1">
+                                <div class="col-lg-11">
+                                    .
+                                </div>
+                                <div class="col-lg-1">
+                                    <div class="row  no-gutter">
+                                        <div class="col-xs-10" style="margin-left: 20px;margin-top: 2px;">
+                                            <button type="submit" class="ladda-button ladda-button-submit btn btn-primary button-search" data-style="zoom-in">Lọc danh sách</button>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="ibox">
+            <div class="ibox-content" style="background-color: whitesmoke;">
+                <div class="col-lg-12">
+                    <div class="table-responsive">
+                        <div id="kanbanDisplay" style="min-width: 1200px;">
+                            @{Html.RenderPartial("_Kanban", @Model); }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    @Styles.Render("~/plugins/sweetAlertStyles")
+    @Styles.Render("~/plugins/laddaStyles")
+}
+
+@section Scripts {
+    @Scripts.Render("~/plugins/ladda")
+}
+
+<style>
+.createtaskmenuitem {
+    display: inline-block !important;
+}
+</style>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('.button-search').ladda();
+
+        $('.input-daterange input').each(function () {
+            $(this).datepicker({
+                keyboardNavigation: true,
+                forceParse: true,
+                autoclose: true,
+                format: "dd/mm/yyyy",
+                language: "vi"
+            })
+        });
+        $("#FilterTaskType").combobox();
+    });
+
+    function deactive() {
+        $('.button-search').ladda('start');
+        // disable
+        $(".form-group :input").attr("disabled", "disabled");
+    };
+
+    function active() {
+        $('.button-search').ladda('stop');
+        //toastr["success"]('Thao tác thành công.', "");
+        // enable
+        $(".form-group :input").removeAttr('disabled');
+		setTimeout(function(){
+			$(document).ready(function () {
+				$('.collapse-link').on('click',function () {
+					var ibox = $(this).closest('div.ibox');
+					var button = $(this).find('i');
+					var content = ibox.find('div.ibox-content');
+					content.slideToggle(200);
+					button.toggleClass('fa-chevron-up').toggleClass('fa-chevron-down');
+					ibox.toggleClass('').toggleClass('border-bottom');
+					setTimeout(function () {
+						ibox.resize();
+						ibox.find('[id^=map-]').resize();
+					}, 50);
+				});
+
+				// Close ibox function
+				$('.close-link').click(function () {
+					var content = $(this).closest('div.ibox');
+					content.remove();
+				});
+			});
+		}, 1000);
+    };
+
+
+</script>

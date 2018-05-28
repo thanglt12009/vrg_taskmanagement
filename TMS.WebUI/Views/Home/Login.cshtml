@@ -1,0 +1,47 @@
+﻿@model TMS.WebApp.Models.AccountViewModel
+@{
+    Layout = null;
+    ViewBag.ReturnUrl = Request.QueryString["ReturnUrl"];}
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng nhập Hệ thống</title>
+    @Styles.Render("~/font-awesome/css")
+    @Styles.Render("~/Content/css")
+    @Styles.Render("~/plugins/laddaStyles")
+    @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/plugins/ladda")
+    @Scripts.Render("~/plugins/iCheck")
+</head>
+
+<body class="gray-bg">
+    <div class="loginColumns animated fadeInDown" id="wholeform">
+        <div class="row">
+            <div class="col-md-6" style="text-align: justify;">
+                <h2 class="font-bold">Hệ thống quản lý Công việc</h2>
+
+                <p>
+                    Xin vui lòng đăng nhập để truy cập vào các chức năng của hệ thống quản lý công việc.
+                </p>
+
+                <p>
+                    Hệ thống quản lý Công việc giúp doanh nghiệp quản lý các công việc và tài liệu theo một quy trình hợp lý, tự động, giảm các thao tác bằng tay.
+                </p>
+
+                <p>
+                    <small>Phiên bản phần mềm: @System.Configuration.ConfigurationManager.AppSettings["TaskMgrVersion"]</small>
+                </p>
+            </div>
+            <div class="col-md-6">
+                <div class="ibox-content" id="loginForm">
+                    @{ Html.RenderPartial("_LoginPartialView", @Model);}
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

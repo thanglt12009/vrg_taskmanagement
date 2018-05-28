@@ -1,0 +1,12 @@
+﻿@model P050916.Domain.Entities.Worktask
+
+<div class="well">
+    <h3>
+        <span>@Html.ActionLink("("+Model.Identify + ")" + @Model.Title, "Detail", new { id = Model.Id })</span>
+</h3>
+    <span class="lead">@Html.LabelFor(m => m.CreationDate) @Model.CreationDate</span>
+    <br />
+    <span class="lead">@Html.LabelFor(m => m.Asignee) @Model.Asignee</span>
+    <br />
+    <span class="lead">@Html.LabelFor(m => m.Description) @Model.Description</span>
+</div>

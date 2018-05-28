@@ -1,0 +1,131 @@
+﻿@model TMS.WebApp.Models.KanbanInfoModel
+
+@using TMS.WebApp.Services
+@using TMS.Domain.Common
+
+<link href="~/Content/plugins/autocomplete/autocomplete.css" rel="stylesheet" />
+<div id="modal-container-createboardmodal" class="modal fade inmodal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content animated fadeIn">
+            <div class="modal-header">
+                <h4 class="modal-title text-left">Bảng Công việc Mới</h4>
+            </div>
+            @using (Html.BeginForm("SaveBoard", "Kanban", FormMethod.Post, new { @id = "formCreateBoard" }))
+            {
+                <div class="modal-body">
+                    <div class="form-horizontal">
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                        <!--BOARD TITLE-->
+                        <div class="form-group">
+                            <div class="col-md-2">
+                            @Html.LabelFor(model => model.Title, htmlAttributes: new { @class = "control-label" })
+                            </div>
+                            <div class="col-md-8">
+                                @Html.EditorFor(model => model.Title, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Title, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-2">
+                                @Html.LabelFor(model => model.Code, htmlAttributes: new { @class = "control-label" })
+                            </div>
+                            <div class="col-md-8">
+                                @Html.EditorFor(model => model.Code, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Code, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-2">
+                                @Html.LabelFor(model => model.WorkflowID, htmlAttributes: new { @class = "control-label" })
+                            </div>
+                            <div class="col-md-8">
+                                @Html.DropDownListFor(model => model.WorkflowID, WorkflowService.GetInstance().GetWorkflowList(), new { @class = "form-control dropdown" })
+                                @Html.ValidationMessageFor(model => model.WorkflowID, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <!--Members-->
+                        <div class="form-group">
+                            <div class="col-md-2">
+                                <label class="control-label">Thành viên</label>
+                            </div>
+                            <div class="col-md-8">
+                                <div id="search_bar_boardmemberlist"></div>
+                                <input name="BoardMemberList" id="boardmemberlist" type="hidden" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <div class="form-group">
+                        <div class="col-md-offset-2 col-md-10">
+                            <input type="button" value="Hủy" class="btn btn-white reset-button" data-dismiss="modal" />
+                            <input type="submit" value="Tạo" class="btn btn-primary" />
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    (function ($) {
+        $.ajax({
+            type: 'GET',
+            url: '/Worktask/GetAccount',
+            success: function (data) {
+                var Members = [];
+                for (var i = 0; i < data.source.length; i++) {
+                    Members.push({ value: data.source[i] });
+                }
+                var config = {
+                    lists: {
+                        Members: {
+                            optionHTML: '{name}',
+                            options: Members
+                        }
+                    }
+                };
+                $('#boardmemberlist')[0].widget = new AutoComplete('search_bar_boardmemberlist', config);
+            },
+            error: function (msg) {
+                alert("error");
+            }
+        });
+        $('#formCreateBoard').submit(function (event) {
+            event.preventDefault();
+            var $form = $(this);
+            var widget = $('#boardmemberlist')[0].widget;
+            var selectedmember = widget.getValue();
+            var selectedids = [];
+            for (var i = 0; i < selectedmember.length; i++) {
+                selectedids.push(selectedmember[i][0].value.id);
+            }
+            var url = $form.attr('action');
+            var formSubmit = $form.serializeObject();
+            formSubmit.Id = 0;
+            formSubmit.BoardMemberList = selectedids;
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: formSubmit,
+                success: function (response) {
+                    if (response.success) {
+                        toastr["success"](response.message);
+                        window.location.href = response.redirectUrl;
+                    } else {
+	                        toastr["error"](response.message);
+                        if (typeof response.redirectUrl != 'undefined') {
+                            window.location.href = response.redirectUrl;
+                        }
+                    }
+                },
+                error: function (response) {
+                    toastr["error"](response.message);
+                }
+            });
+        });
+    })(jQuery);
+</script>

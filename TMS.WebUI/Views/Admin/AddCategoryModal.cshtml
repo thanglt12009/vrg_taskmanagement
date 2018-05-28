@@ -1,0 +1,76 @@
+﻿@model TMS.Domain.Entities.Category
+@using TMS.WebApp.Services
+@using TMS.Domain.Common
+
+<link href="~/Content/uploadFile/uploadfile.css" rel="stylesheet" />
+<script src="~/Scripts/plugins/upload/upload.js"></script>
+
+<!--Add category modal -->
+
+        @using (Html.BeginForm("SaveCategory", "Admin", FormMethod.Post, new { Id = "formCreateCategory" }))
+            {
+            @Html.AntiForgeryToken()
+            <div class="modal-body">
+                <div class="form-horizontal">
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.CategoryName, htmlAttributes: new { @class = "control-label col-md-3" })
+                        <div class="col-md-4">
+                            @Html.EditorFor(model => model.CategoryName, new { htmlAttributes = new { @class = "form-control", @id = "input-category-name-a" } })
+                            @Html.ValidationMessageFor(model => model.CategoryName, "", new { @class = "text-danger" })
+                            <input type="hidden" id="input-error" value="Tên đăng nhập đã sử dụng!">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.ParentCatID, htmlAttributes: new { @class = "control-label col-md-3" , @id = "input-display-a"})
+                        <div class="col-md-4">
+                            @Html.DropDownListFor(model => model.ParentCatID, (IEnumerable<SelectListItem>)ViewBag.Categories, new { htmlAttributes = new { @class = "form-control" } })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.CatValue, htmlAttributes: new { @class = "control-label col-md-3" })
+                        <div class="col-md-4">
+                            @Html.EditorFor(model => model.CatValue, new { @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.CatType, htmlAttributes: new { @class = "control-label col-md-3" })
+                        <div class="col-md-4">
+                            @Html.DropDownListFor(model => model.CatType, CategoryService.GetInstance().GetCategoryList(Contain.CatType.CategoryType), new { @class = "form-control dropdown" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <input type="button" value="Hủy" class="btn btn-white reset-button" data-dismiss="modal" />
+                        <input type="submit" value="Tạo" class="btn btn-primary" />
+                    </div>
+                </div>
+            </div>
+        }
+
+
+<script type="text/javascript">
+
+
+    $("#input-username-a").focusout(function () {
+        $.ajax({
+
+            type: "POST",
+            url: "@Url.Action("IsUserExisted", "Admin")" + "?UID=" + UID,
+            success: function (check) {
+                if(check)
+                {
+                    $('input-error').show();
+                } else {
+                    $('input-error').hide();
+                }
+            },
+        error: function (e) {
+            console.log("modal fail");
+        }
+    });
+    })
+</script>

@@ -1,0 +1,378 @@
+﻿@model TMS.WebApp.Models.WorktaskListViewModel
+@using TMS.Domain.Common
+@using TMS.WebApp.Services
+@using TMS.WebApp.HtmlHelpers
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="animated fadeInRight">
+    <div class="row">
+        <div class="ibox">
+            <div class="ibox-title">
+                <div class="pull-left">
+                    <h3>@Model.Board.Title</h3>
+                </div>
+                <div class="ibox-tools">
+                    <a class="collapse-link">
+                        <i class="fa fa-chevron-down"></i>
+                    </a>
+                </div>
+            </div>
+
+            <div class="ibox-content list-filter">
+                <div class="">
+                    <div class="row">
+                        <div class="form-group col-lg-2">
+                            <div class=""><label class="small">Loại công việc</label></div>
+                            @Html.ListBoxFor(m => m.TaskTypeEnum, CategoryService.GetInstance().GetCategoryList(Contain.CatType.Category), new { @class = "form-control filter-by-type dropdown" })
+                            <div class=""><label class="small">Công ty</label></div>
+                            @Html.ListBoxFor(m => m.Company, CategoryService.GetInstance().GetCategoryList(Contain.CatType.Company), new { @class = "form-control filter-by-company dropdown" })
+                        </div>
+                        <div class="form-group col-lg-2">
+                            <div class=""><label class="small">Trạng Thái</label></div>
+                            @Html.ListBoxFor(m => m.TaskStatusEnum, WorkflowService.GetInstance().GetStateList(@Model.Board.Workflow.ID), new { @class = "form-control filter-by-status dropdown" })
+                        </div>
+
+                        <div class="form-group col-lg-2">
+                            <label class="small">Người tạo</label>
+                            <input type="text" class="form-control input-sm" id="filter-by-owner" />
+                            <label class="small">Người thực hiện</label>
+                            <input type="text" class="form-control input-sm" id="filter-by-asignee" />
+                        </div>
+                        <div class="form-group col-lg-3">
+                            <label class="small">Ngày bắt đầu</label>
+                            <div class="input-daterange input-group" id="datepicker">
+                                <input type="text" class="input-sm form-control startdate_min" id="startdate_min" value="" />
+                                <span class="input-group-addon">～</span>
+                                <input type="text" class="input-sm form-control startdate_max" id="startdate_max" value="" />
+                            </div>
+                            <label class="small">Ngày kết thúc</label>
+                            <div class="input-daterange input-group" id="datepicker">
+                                <input type="text" class="input-sm form-control" id="enddate_min" value="" />
+                                <span class="input-group-addon">～</span>
+                                <input type="text" class="input-sm form-control" id="enddate_max" value="" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        </div>
+    <div class="row no-gutter">
+        <div class="ibox-content">
+            <div class="table-responsive">
+                <table class="table table-hover table-striped table-bordered issue-tracker dataTables-tasklist">
+                    <thead>
+                        <tr>
+                            <th>Loại</th>
+                            <th class="hidden"></th>
+                            <th>Độ ưu tiên</th>
+                            <th class="hidden"></th>
+                            <th>Trạng Thái</th>
+                            <th>Mã số</th>
+                            <th>Công ty</th>
+                            <th class="hidden"></th>
+                            <th>Người tạo</th>
+                            <th>Người thực hiện</th>
+                            <th>Dự định bắt đầu</th>
+                            <th>Dự định kết thúc</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        @foreach (var worktask in Model.Worktasks)
+                    {
+                            <tr>
+                                <td class="select-filter text-nowrap">
+                                    @Html.GetCatName((int)worktask.TaskType, CategoryService.GetInstance().GetCategoryList(Contain.CatType.Category))
+                                </td>
+                                <td class="hidden">
+                                    @((int)worktask.TaskType)
+                                </td>
+                                <td class="text-center">@Html.GetCatName((int)worktask.Priority, CategoryService.GetInstance().GetCategoryList(Contain.CatType.Priority))</td>
+                                <td class="hidden">@((int)worktask.WorkflowInstance.CurrentStateID)</td>
+                                <td class="text-center">@worktask.WorkflowInstance.CurrentState.Name</td>
+                                <td class="issue-info">
+                                    <span>@Html.ActionLink(worktask.Identify, "Detail", new { taskcode = worktask.Identify, ReturnUrl = Request.Url.PathAndQuery })</span>
+
+                                    <small>
+                                        @Html.DisplayFor(m => worktask.Title)
+                                    </small>
+                                </td>
+                                <td>
+                                    @CategoryService.GetInstance().GetCategoryName((worktask.MetaInfoCompany == null ? 0 : (int)worktask.MetaInfoCompany), Contain.CatType.Company)
+                                </td>
+                                <td class="hidden">
+                                    @((int)(worktask.MetaInfoCompany == null ? 0 : worktask.MetaInfoCompany))
+                                </td>
+                                <td>
+                                    @worktask.OwnerAcc.DisplayName2
+                                </td>
+                                <td>
+                                    @worktask.AssigneeAcc.DisplayName2
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(m => worktask.PlannedStartDate, "{0:dd/MM/yyyy}")
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(m => worktask.PlannedEndDate, "{0:dd/MM/yyyy}")
+                                </td>
+                            </tr>
+                    }
+                    </tbody>
+                    <tfoot></tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+@section Styles {
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+}
+<style>
+    .createtaskmenuitem {
+        display: inline-block !important;
+    }
+</style>
+@section Scripts {
+    @Scripts.Render("~/plugins/dataTables")
+
+    <script type="text/javascript">
+        /* Custom filtering function which will search data in column four between two values */
+        $.fn.dataTableExt.afnFiltering.push(
+            function (oSettings, aData, iDataIndex) {
+
+                var startdate_min_val = $('#startdate_min').val();
+                var startdate_max_val = $('#startdate_max').val();
+                var arr_min = '';
+                var arr_max = '';
+
+                if (startdate_min_val != '') {
+                    var arr_min = startdate_min_val.substring(6, 10) + startdate_min_val.substring(3, 5) + startdate_min_val.substring(0, 2);
+                }
+
+                if (startdate_max_val != '') {
+                    var arr_max = startdate_max_val.substring(6, 10) + startdate_max_val.substring(3, 5) + startdate_max_val.substring(0, 2);
+                }
+
+                if (aData[10] != '') {
+                    var arr_date = aData[10].substring(6, 10) + aData[10].substring(3, 5) + aData[10].substring(0, 2);
+                }
+                else {
+                    if ((startdate_min_val != '') || (startdate_max_val != '')) {
+                        return false;
+                    }
+                    return true;
+                }
+
+                if (arr_min === '' && arr_max === '') {
+                    return true;
+                }
+                else if (arr_min <= arr_date && arr_max === '') {
+                    return true;
+                }
+                else if (arr_max >= arr_date && arr_min === '') {
+                    return true;
+                }
+                else if (arr_min <= arr_date && arr_max >= arr_date) {
+                    return true;
+                }
+
+                return false;
+            }
+        );
+
+        $.fn.dataTableExt.afnFiltering.push(
+    function (oSettings, aData, iDataIndex) {
+
+        var enddate_min_val = $('#enddate_min').val();
+        var enddate_max_val = $('#enddate_max').val();
+        var arr_min = '';
+        var arr_max = '';
+
+        if (enddate_min_val != '') {
+            var arr_min = enddate_min_val.substring(6, 10) + enddate_min_val.substring(3, 5) + enddate_min_val.substring(0, 2);
+        }
+
+        if (enddate_max_val != '') {
+            var arr_max = enddate_max_val.substring(6, 10) + enddate_max_val.substring(3, 5) + enddate_max_val.substring(0, 2);
+        }
+
+        if (aData[11] != '') {
+            var arr_date = aData[11].substring(6, 10) + aData[11].substring(3, 5) + aData[11].substring(0, 2);
+        }
+        else {
+            if ((enddate_min_val != '') || (enddate_max_val != '')) {
+                return false;
+            }
+            return true;
+        }
+
+        if (arr_min === '' && arr_max === '') {
+            return true;
+        }
+        else if (arr_min <= arr_date && arr_max === '') {
+            return true;
+        }
+        else if (arr_max >= arr_date && arr_min === '') {
+            return true;
+        }
+        else if (arr_min <= arr_date && arr_max >= arr_date) {
+            return true;
+        }
+
+        return false;
+    }
+);
+
+        $(document).ready(function () {
+
+            var table = $('.dataTables-tasklist').DataTable({
+                dom: '<"html5buttons"B>lTfgitp',
+                buttons: [
+                    { extend: 'copy' },
+                    { extend: 'csv' },
+                    { extend: 'excel', title: 'Danh sach cong viec' },
+                    { extend: 'pdf', title: 'Danh sach cong viec' },
+
+                    {
+                        extend: 'print',
+                        customize: function (win) {
+                            $(win.document.body).addClass('white-bg');
+                            $(win.document.body).css('font-size', '10px');
+
+                            $(win.document.body).find('table')
+                                    .addClass('compact')
+                                    .css('font-size', 'inherit');
+                        }
+                    }
+                ],
+                "oLanguage": {
+                    "sLengthMenu": "Hiển thị _MENU_ dòng mỗi trang",
+                    "sZeroRecords": "Xin lỗi, không tìm thấy dữ liệu",
+                    "sInfo": "Đang xem từ _START_ đến _END_ của _TOTAL_ dòng",
+                    "sInfoEmpty": "Đang không có dữ liệu để xem",
+                    "sInfoFiltered": "(Đã lọc trong toàn bộ _MAX_ dữ liệu)",
+                    "sSearch":"Tìm kiếm:",
+                    "oPaginate": { "sFirst": "Trang đầu", "sLast": "Trang cuối", "sNext": "Kế tiếp", "sPrevious": "Trang trước" }
+                }
+            });
+
+            // Apply the search
+            $('#filter-by-taskid').on('keyup', function () {
+                table
+                    .columns(5)
+                    .search(this.value)
+                    .draw();
+            });
+
+            $('.filter-by-company').on('change', function () {
+                var selectedValue = $(this).val();
+                selectedValue = selectedValue.join("|");
+                table
+                    .columns(7)
+                    .search(selectedValue)
+                    .draw();
+            });
+            $('#filter-by-owner').on('keyup', function () {
+                table
+                    .columns(8)
+                    .search(this.value)
+                    .draw();
+            });
+
+            // Apply the search
+            $('#filter-by-asignee').on('keyup', function () {
+                table
+                    .columns(9)
+                    .search(this.value)
+                    .draw();
+            });
+
+            //$('.input-group.date').datepicker({
+            //    todayBtn: "linked",
+            //    keyboardNavigation: false,
+            //    forceParse: false,
+            //    calendarWeeks: true,
+            //    autoclose: true,
+            //    dateFormat: 'dd/mm/yyyy'
+            //});
+
+            $('.input-daterange input').each(function () {
+                $(this).datepicker({
+                    keyboardNavigation: true,
+                    forceParse: true,
+                    autoclose: true,
+                    format: "dd/mm/yyyy",
+                    language: "vi"
+                })
+            });
+
+            $('.filter-by-type').on('change', function () {
+                var selectedValue = $(this).val();
+                selectedValue = selectedValue.join("|");
+                table
+                    .columns(1)
+                    .search(selectedValue)
+                    .draw();
+            });
+
+            $('.filter-by-status').on('change', function () {
+                var selectedValue = $(this).val();
+                selectedValue = selectedValue.join("|");
+                table
+                    .columns(3)
+                    .search(selectedValue)
+                    .draw();
+            });
+
+            //// Get Start date Value
+            //var start_planstartbox = document.getElementById('start_startdate');
+            //if (start_planstartbox != null) {
+            //    start_planstart = start_planstartbox.value;
+            //}
+            //else start_planstart = "";
+
+            //// Get End date value
+            //var end_planstartbox = document.getElementById('start_startdate');
+            //if (start_planstartbox != null) {
+            //    start_planstart = start_planstartbox.value;
+            //}
+            //else start_planstart = "";
+
+            // Search on STARTDATE
+            $('#startdate_max').on('keyup', function () {
+                table.draw();
+            });
+            $('#startdate_max').on('changeDate', function () {
+                table.draw();
+            });
+            $('#startdate_min').on('keyup', function () {
+                table.draw();
+            });
+            $('#startdate_min').on('changeDate', function () {
+                table.draw();
+            });
+
+            // Search on ENDDATE
+            $('#enddate_max').on('keyup', function () {
+                table.draw();
+            });
+            $('#enddate_max').on('changeDate', function () {
+                table.draw();
+            });
+            $('#enddate_min').on('keyup', function () {
+                table.draw();
+            });
+            $('#enddate_min').on('changeDate', function () {
+                table.draw();
+            });
+            $("#TaskTypeEnum").combobox();
+            $("#Company").combobox();
+            $("#TaskStatusEnum").combobox();
+        });
+    </script>
+}

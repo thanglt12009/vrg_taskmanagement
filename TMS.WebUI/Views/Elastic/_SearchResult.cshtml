@@ -1,0 +1,106 @@
+﻿@model TMS.WebApp.Models.SearchResult<TMS.Domain.Entities.Worktask>
+<div class="ibox">
+    <div class="ibox-title">
+        <div class="col-xs-10"><label>Tìm thấy <b>@Model.Results.Count()</b> kết quả trong <b>@Model.ElapsedMilliseconds</b> miligiây.</label></div>
+    </div>
+    <div class="ibox-content">
+        <div class="col-xs-9 col-sm-offset-1">
+            <div class="row margin-bottom-small">
+                <div class="col-md-12">
+                    <!-- START LOOP TO DISPLAY RESULT -->
+                    @foreach (var task in Model.Highlights)
+                    {
+                        Nest.HighlightHit identify;
+                        Nest.HighlightHit title;
+                        Nest.HighlightHit desc;
+                        Nest.HighlightHit metadata;
+                        List<string> metalist = new List<string>();
+                        if (task.Highlight.TryGetValue("task_identify", out identify))
+                        {
+                            task.Source.Identify = String.Empty;
+                            foreach (var d in identify.Highlights)
+                            {
+                                task.Source.Identify += d;
+                            }
+                        }
+                        if (task.Highlight.TryGetValue("task_title", out title))
+                        {
+                            task.Source.Title = String.Empty;
+                            foreach (var d in title.Highlights)
+                            {
+                                task.Source.Title += d;
+                            }
+                        }
+                        else
+                        {
+                            if (task.Source.Title != null && task.Source.Title.Length > 50)
+                            {
+                                task.Source.Title = task.Source.Title.Substring(0, 50);
+                            }
+                        }
+                        if (task.Highlight.TryGetValue("task_description", out desc))
+                        {
+                            task.Source.Description = String.Empty;
+                            foreach (var d in desc.Highlights)
+                            {
+                                task.Source.Description += d;
+                            }
+                        }
+                        else
+                        {
+                            if (task.Source.Description != null && task.Source.Description.Length > 200)
+                            {
+                                task.Source.Description = task.Source.Description.Substring(0, 200);
+                            }
+                        }
+                        if (task.Highlight.TryGetValue("attachments.attachment_content", out metadata))
+                        {
+                            task.Source.Description = String.Empty;
+                            foreach (var d in metadata.Highlights)
+                            {
+                                metalist.Add(d);
+                            }
+                        }
+                        else
+                        {
+                            foreach (var at in task.Source.Attachment)
+                            {
+                                if (at.Metadata != null)
+                                {
+                                    if (at.Metadata.Length > 200)
+                                    {
+                                        metalist.Add(at.Metadata.Substring(0, 200));
+                                    }
+                                    else
+                                    {
+                                        metalist.Add(at.Metadata);
+                                    }
+                                }
+                            }
+                        }
+                        <div class="row">
+                            <div class="col-md-3">
+                                <a href="@Url.Action("Detail","Worktask",new { taskcode = task.Source.Identify })">@Html.Raw(task.Source.Identify)</a>
+                            </div>
+                            <div class="col-md-4">
+                                <a href="@Url.Action("Detail","Worktask",new { taskcode = task.Source.Identify })">@Html.Raw(task.Source.Title)</a>
+                            </div>
+                            <div class="col-md-5">
+                                <p class="small">@Html.Raw(task.Source.Description)</p>
+                            </div>
+                        </div>
+                        foreach (var at in metalist)
+                        {
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p class="small">@Html.Raw(at)</p>
+                                </div>
+                            </div>
+                        }
+                    }
+                    <!-- END LOOP TO DISPLAY RESULT -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
